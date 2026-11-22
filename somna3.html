@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOMNA 睡眠头环</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700&family=Zhi+Mang+Xing&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one centered 1120px column; each sleep cycle re-themes the same page: mist, dimmer mist, sour dusk, visitor night, false morning */
+  --f-display:"Noto Serif SC","Songti SC","STSong",serif;
+  --f-body:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-hand:"Zhi Mang Xing","Kaiti SC","STKaiti",cursive;
+  --bg:#EEF0F4;--card:#FFFFFF;--ink:#151827;--muted:#5D6278;--line:#DADDE6;--accent:#3F4BC9;--soft:#F3F4F8;
+  --navbg:rgba(238,240,244,.82);--btn:#151827;--btnink:#FFFFFF;
+  color-scheme:light;
+}
+body.t2{--bg:#EBECEE;--card:#FCFCFB;--soft:#F0F0F2;--navbg:rgba(235,236,238,.84);--accent:#4651BC}
+body.t3{--bg:#CBC7BE;--card:#DCD7CE;--ink:#1F1D1A;--muted:#5C574F;--line:#B3ADA2;--accent:#5A5D74;--soft:#D3CEC4;--navbg:rgba(203,199,190,.86);--btn:#1F1D1A}
+body.t4{--bg:#0C0D11;--card:#15161C;--ink:#DEDBD4;--muted:#8A8780;--line:#25262D;--accent:#C0594C;--soft:#111217;--navbg:rgba(12,13,17,.84);--btn:#DEDBD4;--btnink:#0C0D11;color-scheme:dark}
+body.t5{--bg:#F6F7F9;--card:#FFFFFF;--line:#E2E4EA;--soft:#F1F2F5;--navbg:rgba(246,247,249,.86)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.sec{padding:88px 0}
+.eyebrow{display:block;font-size:13px;letter-spacing:.12em;color:var(--accent);font-weight:500;margin-bottom:14px}
+.h2{font-size:clamp(28px,4.6vw,44px);line-height:1.22}
+.lead{color:var(--muted);font-size:17px;max-width:36em;margin-top:16px}
+.fine{margin-top:28px;font-size:12px;color:var(--muted);max-width:44em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:14px 22px;font-size:15px;font-weight:500;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn-pri{background:var(--btn);color:var(--btnink)}
+.btn-sec{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn svg{width:15px;height:15px}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--navbg);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);transition:opacity .5s,transform .5s}
+.nav.gone{opacity:0;transform:translateY(-100%);pointer-events:none}
+.nav-in{height:60px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-weight:500;letter-spacing:.32em;font-size:15px}
+.moon{width:20px;height:20px;border-radius:50%;background:currentColor;position:relative;overflow:hidden;flex:none}
+.moon::after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;left:7px;top:-3px;background:var(--mbg,var(--bg))}
+.nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted)}
+.nav .btn{padding:9px 16px;font-size:13px}
+@media (max-width:760px){.nav-links{display:none}}
+
+/* hero */
+.hero{padding:118px 0 70px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(40px,7vw,72px);line-height:1.14}
+.hero .lead{font-size:18px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.trust{margin-top:22px;font-size:13px;color:var(--muted)}
+.hint{margin-top:40px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.hint i{display:block;width:1px;height:26px;background:currentColor;opacity:.5;animation:drip 2.2s ease-in-out infinite;transform-origin:top}
+@keyframes drip{0%{transform:scaleY(.2)}60%{transform:scaleY(1)}100%{transform:scaleY(.2);opacity:0}}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}.hero{padding-top:100px}}
+.app{background:var(--card);border-radius:28px;padding:24px;box-shadow:0 30px 60px -30px rgba(0,0,0,.28),0 0 0 1px var(--line);max-width:420px;width:100%;justify-self:center}
+.app-top{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.score{display:flex;align-items:baseline;gap:10px;margin:10px 0 18px}
+.score b{font-family:var(--f-display);font-size:62px;line-height:1;font-variant-numeric:tabular-nums}
+.score span{font-size:14px;color:var(--muted)}
+.hyp{display:grid;grid-template-columns:34px 1fr;gap:8px}
+.hyp-lbl{display:flex;flex-direction:column;justify-content:space-around;font-size:11px;color:var(--muted)}
+.hyp canvas{width:100%;height:92px;display:block}
+body.t3 .hyp canvas{filter:saturate(.35)}
+.hyp-axis{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--muted);margin:4px 0 0 42px}
+.rows{margin-top:16px;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rows span{color:var(--muted);white-space:nowrap}
+.rows b{font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+.eeg{margin-top:16px;background:var(--soft);border-radius:14px;padding:12px 12px 6px}
+.eeg-lbl{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.live{width:7px;height:7px;border-radius:50%;background:#2FB36E;box-shadow:0 0 0 3px rgba(47,179,110,.18);flex:none}
+.live.red{background:#E0464D;box-shadow:0 0 0 3px rgba(224,70,77,.2)}
+.eeg canvas{width:100%;height:54px;display:block}
+
+/* stats */
+.stats{padding:16px 0 70px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.stat{background:var(--bg);padding:24px 20px}
+.stat b{display:block;font-family:var(--f-display);font-size:clamp(24px,3.4vw,34px);font-variant-numeric:tabular-nums;line-height:1.25}
+.stat span{font-size:13px;color:var(--muted)}
+@media (max-width:760px){.stats-grid{grid-template-columns:1fr 1fr}}
+
+/* features */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+.feat{background:var(--card);border-radius:20px;padding:28px;box-shadow:0 0 0 1px var(--line)}
+.feat svg{width:34px;height:34px;color:var(--accent)}
+.feat h3{font-size:20px;margin:16px 0 8px}
+.feat p{color:var(--muted);font-size:15px}
+@media (max-width:860px){.feat-grid{grid-template-columns:1fr}}
+
+/* rules */
+.rules{margin:36px 0 0;padding:0;border-top:1px solid var(--line);max-width:760px}
+.rules li{list-style:none;display:grid;grid-template-columns:44px 1fr;gap:6px;padding:18px 0;border-bottom:1px solid var(--line);font-size:16px}
+.rules .n{font-family:var(--f-mono);color:var(--accent);font-size:14px;padding-top:2px}
+.rules li.ghost{color:rgba(21,24,39,.075);border-bottom-color:transparent}
+.rules li.ghost .n{color:rgba(21,24,39,.075)}
+.rules-note{font-size:13px;color:var(--muted);margin-top:16px}
+.sheet{position:relative;margin-top:36px;max-width:720px;background:#ECE5D4;color:#2a2723;padding:34px 26px 40px;box-shadow:0 22px 40px -24px rgba(0,0,0,.55);transform:rotate(-.6deg);background-image:repeating-linear-gradient(transparent 0 31px,rgba(0,0,0,.035) 31px 32px)}
+.sheet h4{font-size:19px;margin:0 0 14px}
+.sheet ol{margin:0;padding:0}
+.sheet li{list-style:none;padding:9px 0;font-size:15px;display:grid;grid-template-columns:28px 1fr}
+.sheet s{text-decoration-color:#8c1d1d;text-decoration-thickness:2px}
+.hand{display:block;font-family:var(--f-hand);color:#8c1d1d;font-size:23px;line-height:1.25;margin-top:2px;transform:rotate(-2deg);transform-origin:left}
+.typed{font-family:var(--f-mono);font-size:14px}
+.sheet-note{margin-top:14px;font-size:13px}
+.sig{text-align:right;margin-top:10px}
+
+/* replay */
+.shot{margin-top:36px}
+.shot canvas{width:100%;aspect-ratio:16/9;border-radius:16px;display:block;background:#08090c;filter:blur(.4px) contrast(1.08) saturate(.75)}
+.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+.shots canvas{width:100%;aspect-ratio:4/3;border-radius:12px;display:block;background:#08090c;filter:blur(.4px) contrast(1.08) saturate(.7)}
+.cap{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:12px}
+.capt{font-size:15px;margin-top:3px}
+@media (max-width:860px){.shots{grid-template-columns:1fr 1fr}}
+
+/* reviews */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+.q{background:var(--card);border-radius:20px;padding:26px;box-shadow:0 0 0 1px var(--line);display:flex;flex-direction:column;gap:16px}
+.stars{color:#E0A030;letter-spacing:2px;font-size:14px}
+body.t4 .stars{color:#9C8A62}
+.q p{font-size:16px}
+.who{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);margin-top:auto}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:14px;color:#fff;font-weight:500;flex:none}
+.q.bad{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.reply{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted)}
+.reply b{color:var(--accent);font-weight:500}
+.hidden-note{font-size:12px;color:var(--muted)}
+.cursor{display:inline-block;width:.55em;height:1.1em;vertical-align:-.15em;background:currentColor;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (max-width:760px){.quotes{grid-template-columns:1fr}}
+
+/* changelog */
+.log{margin-top:36px;border-left:2px solid var(--line);padding-left:22px;display:grid;gap:24px;max-width:720px}
+.log>div{position:relative}
+.log>div::before{content:"";position:absolute;left:-30px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--bg);box-shadow:inset 0 0 0 2px var(--accent)}
+.log .v{font-family:var(--f-mono);font-size:13px;color:var(--accent)}
+.log .d{font-size:12px;color:var(--muted);margin-left:10px}
+.log p{margin-top:2px}
+
+/* forum */
+.forum{margin-top:36px;border-top:1px solid var(--line);max-width:760px}
+.forum button{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:17px 2px}
+.forum b{font-weight:500}
+.forum small{color:var(--muted);font-size:12px}
+
+/* team */
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
+.person{background:var(--card);border-radius:20px;padding:24px;box-shadow:0 0 0 1px var(--line)}
+.person .av{width:50px;height:50px;font-size:19px}
+.person h3{font-size:18px;margin-top:14px}
+.role{font-size:13px;color:var(--muted)}
+.status{font-size:12px;font-family:var(--f-mono);color:#A33A30;margin-top:2px}
+.person p{margin-top:12px;font-size:15px}
+body.t3 .person .av{filter:grayscale(1);opacity:.55}
+@media (max-width:860px){.team{grid-template-columns:1fr}}
+
+/* report */
+.report{margin-top:36px;padding:24px 26px;max-width:640px;background:var(--card);border-radius:20px;box-shadow:0 0 0 1px var(--line)}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
+.kv span{color:var(--muted)}
+.kv b{font-weight:500;font-variant-numeric:tabular-nums;text-align:right;word-break:break-all}
+.tip{margin-top:16px;font-size:15px}
+.tip.em{color:var(--accent)}
+
+/* faq */
+.faq{margin-top:36px;border-top:1px solid var(--line);max-width:760px}
+.faq>div{padding:20px 0;border-bottom:1px solid var(--line)}
+.faq h3{font-family:var(--f-body);font-weight:500;font-size:17px}
+.faq p{color:var(--muted);margin-top:6px;font-size:15px}
+.redact{background:var(--ink);color:transparent;border-radius:2px;user-select:none}
+
+/* cta + footer */
+.cta{padding:110px 0 80px;text-align:center}
+.cta h2{font-size:clamp(32px,6vw,60px);line-height:1.22}
+.cta .btn{margin-top:30px}
+.foot{border-top:1px solid var(--line);padding:46px 0 64px;font-size:14px;color:var(--muted)}
+.foot-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:28px}
+.foot h4{font-family:var(--f-body);margin:0 0 12px;font-size:13px;color:var(--ink);font-weight:500}
+.foot ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.foot-bottom{margin-top:40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12px}
+@media (max-width:760px){.foot-grid{grid-template-columns:1fr 1fr}}
+
+/* interludes */
+.inter{background:#000;position:relative;color:#e9e6e1}
+.inter-in{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.inter canvas.scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.clock{position:absolute;top:15%;left:0;right:0;text-align:center;font-family:var(--f-mono);font-size:clamp(48px,13vw,108px);color:#e9e6e1;opacity:.16;letter-spacing:.04em;z-index:3;pointer-events:none}
+.ind{position:absolute;top:-60px;left:50%;width:320px;height:150px;margin-left:-160px;border-radius:50%;opacity:0;z-index:2;pointer-events:none;filter:blur(22px)}
+.lid{position:absolute;left:0;right:0;height:0;background:#000;z-index:2;pointer-events:none}
+.lid.top{top:0;background:linear-gradient(#000 78%,rgba(0,0,0,0))}
+.lid.bot{bottom:0;background:linear-gradient(rgba(0,0,0,0),#000 22%)}
+.subs{position:absolute;left:0;right:0;bottom:30%;z-index:4;pointer-events:none}
+.subs p{position:absolute;left:24px;right:24px;bottom:0;text-align:center;font-family:var(--f-display);font-size:clamp(21px,5vw,34px);line-height:1.5;color:#e9e6e1;opacity:0;transition:opacity .6s;text-shadow:0 0 18px rgba(0,0,0,.95)}
+.subs p.on{opacity:1}
+.subs p.r{color:#ff5a5f}
+
+/* final */
+.final{position:relative;padding:22vh 0 0}
+.fl{max-width:640px;margin:0 auto;padding:0 24px;text-align:center}
+.fl p{font-family:var(--f-display);font-size:clamp(22px,5vw,32px);line-height:1.55;margin:0 0 42vh}
+.fl p.qt{font-family:var(--f-body);font-size:17px;opacity:.7}
+.fl p.gap{margin-bottom:70vh}
+.rc{display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:22px 44px;border-radius:22px;background:var(--card);box-shadow:0 0 0 1px var(--line);margin:-28vh 0 48vh}
+.rc .k{font-size:12px;color:var(--muted)}
+.rc b{font-family:var(--f-mono);font-weight:500;font-size:58px;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--ink)}
+.end{height:130vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:48px}
+.gn{font-family:var(--f-display);font-size:24px;color:#55555b}
+.again{background:none;border:0;color:#3d3d42;font-size:13px;letter-spacing:.14em;padding:12px 18px}
+
+/* glitch helpers */
+body.t4 .jt{animation:jit .2s steps(2) infinite}
+@keyframes jit{0%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(1px,-1px)}75%{transform:translate(-1px,0)}}
+
+/* overlays */
+#grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60;opacity:0}
+#vig{position:fixed;inset:0;pointer-events:none;z-index:59;opacity:0;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 45%,rgba(0,0,0,.85) 100%);transition:opacity .8s}
+#flick{position:fixed;inset:0;pointer-events:none;z-index:61;background:#000;opacity:0}
+#veil{position:fixed;inset:0;z-index:99;background:#000;opacity:0;pointer-events:none;transition:opacity .9s}
+#veil.on{opacity:1;pointer-events:auto}
+#dim{position:fixed;inset:0;z-index:98;background:#000;opacity:0;pointer-events:none;transition:opacity 7s}
+#dim.off{opacity:1}
+.pill{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:9px;padding:6px 7px 6px 13px;border-radius:999px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 10px 30px -12px rgba(21,24,39,.35),0 0 0 1px rgba(21,24,39,.06);font-size:13px;color:#151827;transition:background .6s,color .6s,opacity .4s;white-space:nowrap}
+.pill.dk{background:rgba(14,15,20,.82);color:#d8d9e2;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.pill.red{color:#ff6a6f}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.8;flex:none}
+.pill.red .dot{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.7);opacity:.3}}
+.pill .pl{font-size:11px;opacity:.55}
+.pill .st{font-family:var(--f-mono);font-size:12px;min-width:8.6em}
+.pill canvas{width:78px;height:24px;display:block}
+.snd{width:32px;height:32px;border-radius:50%;border:0;background:rgba(21,24,39,.07);display:grid;place-items:center;padding:0;flex:none}
+.pill.dk .snd{background:rgba(255,255,255,.08)}
+.snd svg{width:16px;height:16px}
+.snd .off{display:none}
+.snd.muted .on{display:none}
+.snd.muted .off{display:block}
+.cookie{position:fixed;left:50%;bottom:64px;transform:translate(-50%,20px);z-index:80;width:min(92vw,520px);background:#fff;color:#151827;border-radius:18px;padding:18px;box-shadow:0 24px 60px -20px rgba(0,0,0,.45),0 0 0 1px rgba(21,24,39,.06);opacity:0;pointer-events:none;transition:opacity .4s,transform .4s;font-size:14px}
+.cookie.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.cookie b{display:block;font-size:15px;margin-bottom:4px}
+.cookie p{color:#5D6278}
+.cookie .row{display:flex;gap:8px;margin-top:14px}
+.cookie .btn{padding:10px 16px;font-size:13px}
+.cookie .btn-pri{background:#151827;color:#fff}
+.cookie .btn-sec{box-shadow:inset 0 0 0 1.5px #DADDE6}
+.toast{position:fixed;top:70px;left:50%;transform:translate(-50%,-12px);z-index:90;display:flex;gap:12px;align-items:flex-start;width:min(92vw,400px);background:rgba(255,255,255,.94);color:#151827;padding:12px 14px;border-radius:16px;box-shadow:0 18px 40px -16px rgba(0,0,0,.4),0 0 0 1px rgba(21,24,39,.06);opacity:0;transition:opacity .4s,transform .4s;pointer-events:none;font-size:14px;line-height:1.5}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.dk{background:rgba(20,21,27,.94);color:#e4e2dc;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.toast .ti{width:30px;height:30px;border-radius:8px;background:#151827;color:#fff;display:grid;place-items:center;flex:none}
+.toast.dk .ti{background:#2a2b33}
+.toast .ti .moon{width:14px;height:14px;--mbg:#151827}
+.toast.dk .ti .moon{--mbg:#2a2b33}
+.toast .ti .moon::after{width:12px;height:12px;left:5px;top:-2px}
+.toast b{display:block;font-weight:500}
+.toast span.tb{opacity:.7}
+.toast small{margin-left:auto;font-size:11px;opacity:.5;white-space:nowrap}
+.pill.hide{opacity:0;pointer-events:none}
+.subs p.qt{font-family:var(--f-body);font-size:clamp(17px,4.2vw,24px);color:#bdb9b2}
+.call{position:fixed;inset:0;z-index:92;display:none;flex-direction:column;align-items:center;justify-content:space-between;padding:11vh 24px 9vh;background:rgba(8,9,12,.8);-webkit-backdrop-filter:blur(20px) saturate(.6);backdrop-filter:blur(20px) saturate(.6);color:#f2f2f4;text-align:center}
+.call.on{display:flex}
+.call-top{display:flex;flex-direction:column;align-items:center;gap:6px}
+.call-app{font-size:13px;opacity:.6;letter-spacing:.08em}
+.call-name{font-size:40px;font-weight:500;letter-spacing:.04em}
+.call-st{font-size:16px;opacity:.7;font-variant-numeric:tabular-nums}
+.call-loc{font-size:13px;color:#ff6a6f;min-height:1.3em}
+.call-av{width:108px;height:108px;border-radius:50%;background:#4a4c55;display:grid;place-items:center;font-size:42px;color:#e9e9ee;transition:width .4s,height .4s,font-size .4s}
+.call-cap{min-height:4.6em;max-width:20em;font-family:var(--f-display);font-size:23px;line-height:1.5;transition:opacity .3s}
+.call-btns{display:flex;gap:96px}
+.call-btns>div{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14px;opacity:.9}
+.cb{width:72px;height:72px;border-radius:50%;border:0;display:grid;place-items:center;color:#fff;padding:0}
+.cb svg{width:32px;height:32px}
+.cb.dec{background:#ff3b30}
+.cb.dec svg{transform:rotate(135deg)}
+.cb.acc{background:#34c759}
+.call.ringing .cb.acc{animation:nudge 1.2s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(-6px)}}
+#callHang{display:none}
+.call.talk #callBtns{display:none}
+.call.talk #callHang{display:flex}
+.call.talk .call-av{width:70px;height:70px;font-size:28px}
+.batt{position:fixed;top:14px;left:50%;transform:translate(-50%,-160%);z-index:93;width:min(92vw,380px);background:rgba(28,28,32,.94);color:#f2f2f4;border-radius:16px;padding:14px 16px;display:flex;gap:14px;align-items:center;transition:transform .45s;font-size:14px;line-height:1.5;box-shadow:0 20px 40px -12px rgba(0,0,0,.6)}
+.batt.on{transform:translate(-50%,0)}
+.batt .bi{width:30px;height:15px;border:2px solid #f2f2f4;border-radius:4px;position:relative;flex:none}
+.batt .bi::before{content:"";position:absolute;left:2px;top:2px;bottom:2px;width:3px;background:#ff3b30;border-radius:1px}
+.batt .bi::after{content:"";position:absolute;right:-5px;top:3px;width:3px;height:5px;background:#f2f2f4;border-radius:0 1px 1px 0}
+.batt b{display:block;font-weight:500}
+.batt span{opacity:.7}
+.cd{position:fixed;left:0;right:0;top:17%;z-index:91;display:none;flex-direction:column;align-items:center;color:#e9e6e1;text-align:center;pointer-events:none;padding:0 24px}
+.cd.on{display:flex}
+.cd .k{font-size:14px;opacity:.6}
+.cd b{font-family:var(--f-mono);font-weight:500;font-size:clamp(72px,22vw,140px);line-height:1.05;font-variant-numeric:tabular-nums;opacity:.9}
+.cd .tip{margin-top:8px;font-size:13px;opacity:.6}
+.cd p{margin-top:24vh;font-family:var(--f-display);font-size:clamp(22px,5vw,32px);min-height:1.5em;text-shadow:0 0 18px #000}
+#dark{position:fixed;inset:0;z-index:95;background:#000;opacity:0;pointer-events:none;transition:opacity .6s}
+#reveal{position:fixed;inset:0;width:100%;height:100%;z-index:100;display:none;background:#000}
+#flash{position:fixed;inset:0;z-index:101;background:#dfe8ff;opacity:0;pointer-events:none}
+.note{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:102;width:min(86vw,340px);background:rgba(44,44,50,.6);color:#e4e4e8;border-radius:18px;padding:14px 16px;opacity:0;transition:opacity .8s;font-size:15px;pointer-events:none}
+.note.on{opacity:1}
+.note span{font-size:12px;opacity:.6;display:block;margin-bottom:2px}
+.note b{font-weight:500}
+@media (prefers-reduced-motion:reduce){
+  .hint i,.cursor,body.t4 .jt{animation:none}
+  #veil,#dim{transition-duration:.01s}
+}
+</style>
+</head>
+<body class="t1">
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <span class="logo"><span class="moon"></span>SOMNA</span>
+    <nav class="nav-links" id="navLinks" aria-label="主导航"></nav>
+    <button class="btn btn-pri" id="navCta" data-toast="感谢你的信任|今晚 0:00 自动开始，你什么都不用做。">免费试睡</button>
+  </div>
+</header>
+
+<main id="main"></main>
+<noscript><p style="max-width:32em;margin:110px auto 0;padding:0 24px;font-size:16px;line-height:1.7;color:#151827">这个页面需要在浏览器里打开才能运行。<br>聊天软件和“文件”里的预览不支持网页脚本，请用 Safari 或 Chrome 打开它的网址。</p></noscript>
+
+<canvas id="grain" aria-hidden="true"></canvas>
+<div id="vig" aria-hidden="true"></div>
+<div id="flick" aria-hidden="true"></div>
+
+<div class="pill" id="pill" role="status">
+  <span class="dot"></span>
+  <span class="pl" id="pl">入睡体验</span>
+  <span class="st" id="st">23:01 · 入睡期</span>
+  <canvas id="hypPill" aria-hidden="true"></canvas>
+  <button class="snd muted" id="sndBtn" aria-label="开关声音">
+    <svg class="on" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor" stroke="none"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.5a6 6 0 0 1 0 9"/></svg>
+    <svg class="off" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor" stroke="none"/><path d="M11 6l4 4M15 6l-4 4"/></svg>
+  </button>
+</div>
+
+<div class="cookie" id="cookie" role="dialog" aria-label="Cookie 提示">
+  <b>我们重视你的睡眠和隐私</b>
+  <p>我们使用 Cookie 和脑电数据来改善你的睡眠体验。建议戴上耳机，打开声音。</p>
+  <div class="row"><button class="btn btn-pri" data-close>接受全部</button><button class="btn btn-sec" data-close>仅必要</button></div>
+</div>
+<div class="toast" id="toast" role="status"><span class="ti"><span class="moon"></span></span><div><b id="toastT"></b><span class="tb" id="toastB"></span></div><small>刚刚</small></div>
+
+<div class="call" id="call" role="dialog" aria-label="来电">
+  <div class="call-top"><span class="call-app">SOMNA 语音通话</span><b class="call-name">妈妈</b><span class="call-st" id="callSt">正在呼叫…</span><span class="call-loc" id="callLoc"></span></div>
+  <div class="call-av">妈</div>
+  <div class="call-cap" id="callCap"></div>
+  <div class="call-btns" id="callBtns"><div><button class="cb dec" id="callDec" aria-label="拒绝"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></button><span>拒绝</span></div><div><button class="cb acc" id="callAcc" aria-label="接听"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></button><span>接听</span></div></div>
+  <div class="call-btns" id="callHang"><div><button class="cb dec" id="callEnd" aria-label="挂断"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></button><span>挂断</span></div></div>
+</div>
+<div class="batt" id="batt" role="alert"><span class="bi"></span><div><b>电量不足</b><span>剩余电量 2%。屏幕即将自动熄灭。</span></div></div>
+<div class="cd" id="cd"><span class="k">屏幕将在</span><b id="cdN">10</b><span class="k">秒后熄灭</span><span class="tip" id="cdTip">轻点屏幕，可以让它继续亮着</span><p id="cdTxt"></p></div>
+<div id="dark" aria-hidden="true"></div>
+<canvas id="reveal" aria-hidden="true"></canvas>
+<div id="flash" aria-hidden="true"></div>
+<div class="note" id="note" role="status"><span>SOMNA · <i id="noteT" style="font-style:normal">05:13</i></span><b>检测到用户已入睡。</b></div>
+<div id="dim" aria-hidden="true"></div>
+<div id="veil" aria-hidden="true"></div>
+
+<script>
+(() => {
+'use strict';
+/* ================= utils ================= */
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const sm = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const rnd = (a = 1, b) => b === undefined ? Math.random() * a : a + Math.random() * (b - a);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const TAU = Math.PI * 2;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const COARSE = matchMedia('(pointer: coarse)').matches;
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const pad2 = n => String(n).padStart(2, '0');
+const hhmm = (d = new Date()) => pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+const fmt = n => n.toLocaleString('en-US');
+const md = (ago = 0) => { const d = new Date(Date.now() - ago * 864e5); return `${d.getMonth() + 1}月${d.getDate()}日`; };
+const nightStr = m => { const tot = 23 * 60 + Math.round(m); return pad2(Math.floor(tot / 60) % 24) + ':' + pad2(tot % 60); };
+function hexRGB(h) { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function mixc(a, b, t) { const x = hexRGB(a), y = hexRGB(b); return `rgb(${Math.round(lerp(x[0], y[0], t))},${Math.round(lerp(x[1], y[1], t))},${Math.round(lerp(x[2], y[2], t))})`; }
+function h1(n) { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+function noise(x) { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f); return lerp(h1(i), h1(i + 1), u); }
+function fitCanvas(cv, dpr = DPR) {
+  const w = Math.max(1, Math.round(cv.clientWidth * dpr)), h = Math.max(1, Math.round(cv.clientHeight * dpr));
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; return true; }
+  return false;
+}
+function poly(c, pts) { c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); }
+
+/* ================= who is reading ================= */
+const UA = navigator.userAgent;
+const DEV = /iPhone/.test(UA) ? 'iPhone' : /iPad/.test(UA) ? 'iPad' : /Android/.test(UA) ? '安卓手机' : COARSE ? '手机' : '电脑';
+const NOUN = COARSE ? '手机' : '电脑';
+const TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || '未知时区'; } catch (e) { return '未知时区'; } })();
+const UTC = (() => { const o = -new Date().getTimezoneOffset() / 60; return 'UTC' + (o >= 0 ? '+' : '−') + Math.abs(o); })();
+
+/* ================= persistent state ================= */
+const KEY = 'somna-night-v2';
+let store = {};
+try { store = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { store = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+store.visits = (store.visits || 0) + 1; save();
+let RET = !!store.done;
+const S = { cycle: 1, t0: Date.now(), ups: 0, aways: 0, dwell: {}, flags: {}, count: 2184330 };
+let P = 0, Q = 0, FP = 0, inI = false, NM = 0, ACC = '#3F4BC9', evt = false;
+
+/* ================= copy ================= */
+const ICON = {
+  pulse: '<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 18h6l3-8 5 16 4-12 3 4h9"/></svg>',
+  wave: '<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 14v8M12 9v18M18 5v26M24 11v14M30 15v6"/></svg>',
+  eye: '<svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 18s5.5-9 15-9 15 9 15 9-5.5 9-15 9-15-9-15-9z"/><circle cx="18" cy="18" r="4"/></svg>',
+  play: '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>'
+};
+
+function hero(c) {
+  const EB = { 1: RET ? `欢迎回来 · 第 ${store.visits} 晚` : 'SOMNA 2 脑电睡眠头环 · 现已发售', 2: 'SOMNA 2 脑电睡眠头环 · 现已发售', 3: 'SOMNA 2 · 第 3 个睡眠周期', 4: 'SOMNA · 访客版', 5: 'SOMNA 2 脑电睡眠头环 · 现已发售' };
+  const BASE = '额头 4 枚干电极，每秒读取 256 次脑电。SOMNA 2 在你入睡前引导呼吸，入睡后接管整夜的声音、温度和梦境记录。';
+  const LEAD = { 1: BASE + '你只需要闭上眼睛。', 2: BASE + '你只需要一直闭着眼睛。', 3: '额头 4 枚干电极，每秒读取 256 次脑电。它会在你入睡前叫你的名字，入睡后接管整夜。你只需要一直闭着眼睛，不要回答。', 4: `今晚有 ${fmt(S.count)} 个房间的门没有锁。SOMNA 帮每一位访客找到一个睡得够沉的人，并在天亮之前离开。或者不离开。`, 5: BASE + '你只需要闭上眼睛。' };
+  const TR = { 1: '顺丰包邮 · 30 晚无理由退货', 2: '顺丰包邮 · 30 晚无理由退货 · 本页内容与上一个周期完全相同', 3: '顺丰包邮 · 30 晚无理由退货 · 头环无法取下', 4: '无需钥匙 · 不用等太久 · 他们几乎从不察觉', 5: '顺丰包邮 · 30 晚无理由退货' };
+  const HI = { 1: '向下滑动，体验一次入睡', 2: '继续往下滑', 3: '继续往下滑，不要回头', 4: '向下滑动，靠近一点', 5: '早上好' };
+  const H1 = c === 4 ? '他们闭上眼睛，<br>剩下的交给你。' : c === 3 ? '闭上眼睛，<br>剩下的交给<span data-later="它">我们</span>。' : '闭上眼睛，<br>剩下的交给我们。';
+  const cta = c === 4 ? `<button class="btn btn-pri" data-toast="已开始等待|目标用户仍在看${NOUN}。">开始等待</button>` : '<button class="btn btn-pri" data-toast="感谢你的信任|今晚 0:00 自动开始，你什么都不用做。">开始 30 晚免费试睡</button>';
+  return `<section class="hero" data-name="首页"><div class="wrap hero-grid"><div>
+<span class="eyebrow" data-g>${EB[c]}</span><h1>${H1}</h1><p class="lead" data-g>${LEAD[c]}</p>
+<div class="hero-cta">${cta}<button class="btn btn-sec" data-sound>${ICON.play}<span class="sl">试听助眠音</span></button></div>
+<p class="trust">${TR[c]}</p><p class="hint"><i></i>${HI[c]}</p></div>${appCard(c)}</div></section>`;
+}
+
+function appCard(c) {
+  if (c === 4) return `<div class="app" aria-label="目标用户实时数据"><div class="app-top"><span>目标用户 · 实时</span><span style="display:flex;align-items:center;gap:6px"><span class="live red"></span>在线</span></div>
+<div class="score"><b>清醒</b><span>正在看${NOUN}</span></div>
+<div class="rows"><div><span>本地时间</span><b data-live="now"></b></div><div><span>时区</span><b>${TZ} · ${UTC}</b></div><div><span>设备</span><b>${DEV}</b></div><div><span>已浏览本页</span><b><span data-live="elapsed"></span> 分钟</b></div></div>
+<div class="eeg"><div class="eeg-lbl"><span class="live red"></span><span>目标用户脑电 · β 波 · 紧张</span></div><canvas class="eegc" data-mode="beta"></canvas></div></div>`;
+  const D = {
+    1: { top: `昨晚 · ${md(1)}`, score: '92', sl: '睡眠评分 · 优秀', rows: [['深睡', '1 小时 52 分'], ['REM', '1 小时 31 分'], ['夜间醒来', '1 次 · 03:12']], eeg: '实时脑电 · α 波 10.2 Hz', mode: 'alpha' },
+    2: { top: '今晚 · 进行中', score: '89', sl: '睡眠评分 · 良好', rows: [['深睡', '38 分钟'], ['REM', '9 分钟'], ['夜间醒来', '1 次 · 00:31']], eeg: '实时脑电 · θ 波 · 浅睡', mode: 'theta' },
+    3: { top: '今晚 · 进行中', score: '—', sl: '正在计算…', rows: [['深睡', '1 小时 18 分'], ['夜间醒来', '2 次 · 00:31 · 02:04'], ['床尾停留', '检测中…']], eeg: '实时脑电 · 检测到第二个信号源', mode: 'two' },
+    5: { top: `昨晚 · ${md(0)}`, score: '98', sl: '睡眠评分 · 完美', rows: [['深睡', '2 小时 4 分'], ['REM', '2 小时 11 分'], ['夜间醒来', '4 次 · 00:31 · 02:04 · 03:33 · 05:12']], eeg: '实时脑电 · α 波 10.2 Hz', mode: 'alpha' }
+  }[c];
+  return `<div class="app" aria-label="SOMNA App 睡眠报告示意"><div class="app-top"><span>${D.top}</span><span>SOMNA</span></div>
+<div class="score"><b>${D.score}</b><span>${D.sl}</span></div>
+<div class="hyp"><div class="hyp-lbl"><span>清醒</span><span>REM</span><span>浅睡</span><span>深睡</span></div><canvas class="hypc"></canvas></div>
+<div class="hyp-axis"><span>23:00</span><span>03:00</span><span>07:00</span></div>
+<div class="rows">${D.rows.map(r => `<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div>
+<div class="eeg"><div class="eeg-lbl"><span class="live${c === 3 ? ' red' : ''}"></span><span>${D.eeg}</span></div><canvas class="eegc" data-mode="${D.mode}"></canvas></div></div>`;
+}
+
+function stats(c) {
+  const cnt = `<b class="count${c === 5 ? ' frozen' : ''}">${fmt(c === 5 ? S.count + 1 : S.count)}</b>`;
+  const I = {
+    1: [['6 分钟', '平均入睡用时'], ['7.8 小时', '平均睡眠时长'], [cnt, RET ? '位用户今晚和我们一起入睡（包括你）' : '位用户今晚和我们一起入睡', 1], ['99.97%', '的用户第二天按时醒来']],
+    2: [['6 分钟', '平均入睡用时'], ['9.6 小时', '平均睡眠时长'], [cnt, '位用户今晚和我们一起入睡', 1], ['99.2%', '的用户第二天按时醒来']],
+    3: [['6 分钟', '平均入睡用时'], ['41 天', '平均睡眠时长'], [cnt, '位用户今晚和我们一起入睡', 1], ['63%', '的用户第二天按时醒来']],
+    4: [[fmt(S.count), '个今晚可以进入的房间'], ['3 晚', '平均等待时间'], ['0.03%', '的用户察觉到了访客'], ['0', '察觉之后醒来的用户']],
+    5: [['6 分钟', '平均入睡用时'], ['7.8 小时', '平均睡眠时长'], [cnt, '位用户今晚和我们一起入睡', 1], ['99.97%', '的用户第二天按时醒来']]
+  }[c];
+  return `<section class="stats" data-name="数据"><div class="wrap"><div class="stats-grid">${I.map(([v, l, isC]) => `<div class="stat">${isC ? v : `<b>${v}</b>`}<span>${l}</span></div>`).join('')}</div></div></section>`;
+}
+
+function features(c) {
+  const A = ['脑电级睡眠监测', '医疗级干电极，每秒采样 256 次。它能分辨你是真的睡着了，还是在装睡。'];
+  const B = ['会叫你名字的助眠音', 'AI 语音引导会用你最熟悉的声音，轻轻叫你的名字，带你慢慢放松下来。'];
+  const C = ['梦境回放', 'AI 从脑电信号中重建梦境画面。早上醒来，看看你昨晚去了哪里。'];
+  const F = {
+    1: [A, B, C], 5: [A, B, C],
+    2: [A, ['会叫你名字的助眠音', 'AI 语音引导会用你最熟悉的声音，轻轻叫你的名字。你不需要告诉我们你的名字。'], C],
+    3: [['脑电级睡眠监测', '每秒采样 256 次。它能分辨你是真的睡着了，还是在装睡。它更喜欢你真的睡着。'], ['会叫你名字的助眠音', '它会用你最熟悉的声音叫你的名字。如果你回答了，它就知道你醒着。'], ['梦境回放', '回放里的不是梦。']]
+  }[c];
+  const icons = [ICON.pulse, ICON.wave, ICON.eye];
+  const title = c === 3 ? '整夜，都有人<span data-later="在你床尾">在</span>。' : '整夜，都有人在。';
+  return `<section class="sec" data-name="功能"><div class="wrap"><span class="eyebrow">功能</span><h2 class="h2">${title}</h2><div class="feat-grid">${F.map((f, i) => `<div class="feat">${icons[i]}<h3>${f[0]}</h3><p data-g>${f[1]}</p></div>`).join('')}</div></div></section>`;
+}
+
+const U = ['佩戴时让指示灯朝上。蓝灯常亮，说明头环在正常工作。', '睡前一小时，尽量不要再看手机。', '夜里醒来时，保持闭眼，跟着助眠音重新入睡。', '梦境回放只是根据脑电重建的画面，仅供参考，不必当真。', '头环可以整夜佩戴，不需要中途取下。', '如果听见助眠音里有人叫你的名字，那是正常的语音引导。'];
+const V = ['请在用户闭上眼睛之后，再进入房间。', '如果用户睁开眼睛，请站在原地，不要动。他们会以为那是一件挂着的衣服。', '请站在床尾。不要站到床头，用户会听见你的呼吸。', '如果用户在看手机，请等待。屏幕的光会让他们看不清暗处。', '可以叫用户的名字，用他最熟悉的声音。他每回答一次，你就可以靠近一步。', '如果用户开始数规则的条数，说明他已经察觉。请立即靠近。'];
+function rules(c) {
+  if (c === 3) return rulesSheet();
+  const isV = c === 4;
+  const items = isV ? V.slice() : U.slice();
+  if (c === 2) { items[2] = '夜里醒来时，保持闭眼，不要看床尾。跟着助眠音重新入睡。'; items[4] = '头环可以整夜佩戴，不需要，也无法中途取下。'; items.push('如果你数出了 7 条，请从第 1 条重新读一遍。'); }
+  const li = items.map((t, i) => `<li><span class="n">${pad2(i + 1)}</span><span data-g>${t}</span></li>`).join('') + (c === 5 ? '<li class="ghost"><span class="n">07</span><span>你现在看到的，不是早上。</span></li>' : '');
+  const note = isV ? '本守则共 6 条。用户的须知原本也只有 6 条，第 7 条是我们加上去的。' : '本须知共 6 条。';
+  const name = isV ? '进入之前' : '开始之前';
+  return `<section class="sec" data-name="${name}"><div class="wrap"><span class="eyebrow">${name}</span><h2 class="h2">${isV ? '访客守则。' : '六条小建议，让你睡得更好。'}</h2><ol class="rules">${li}</ol><p class="rules-note" data-g>${note}</p></div></section>`;
+}
+function rulesSheet() {
+  const R = [
+    [U[0], '那红灯呢？？'],
+    [U[1], '看手机反而安全。它会等。'],
+    ['夜里醒来时，保持闭眼，不要看床尾。跟着助眠音重新入睡。', '看了会怎样'],
+    ['梦境回放只是根据脑电重建的画面，<s>仅供参考，不必当真</s>。', '回放不是梦。是我的房间。'],
+    ['头环可以整夜佩戴，不需要，也无法中途取下。', ''],
+    ['<s>如果听见助眠音里有人叫你的名字，那是正常的语音引导。</s>', '不是引导。别回答。'],
+    ['如果你数出了 7 条，请从第 1 条重新读一遍。', '我读了 11 遍']
+  ];
+  return `<section class="sec" data-name="开始之前"><div class="wrap"><span class="eyebrow">开始之前</span><h2 class="h2">六条小建议，让你睡得更好。</h2><p class="lead">以下是内测用户 #0417 寄回的头环包装里附带的须知原件，已扫描存档。</p>
+<div class="sheet"><h4>SOMNA 2 使用须知</h4><ol>${R.map((r, i) => `<li><span>${i + 1}.</span><span>${r[0]}${r[1] ? `<span class="hand">${r[1]}</span>` : ''}</span></li>`).join('')}<li class="typed"><span>8.</span><span>床尾陪伴模式无法关闭。</span></li></ol>
+<p class="sheet-note">本须知共 6 条。<span class="hand" style="display:inline-block;margin-left:10px">6？</span></p><p class="hand sig">—— #0417</p></div></div></section>`;
+}
+
+function replay(c) {
+  if (c === 1 || c === 2 || c === 5) {
+    const spec = c === 2 ? 'corr:0' : c === 5 ? 'corr:coat' : (RET ? 'corr:0' : 'corr:-1');
+    const cap = c === 2 ? ['内测用户 #0417 · 第 2 晚 · 02:51', '同一条走廊。门开着。门口好像站着一个人。'] : ['内测用户 #0417 · 第 1 晚 · 02:14', '一条很长的走廊，尽头有一扇门。'];
+    return `<section class="sec" data-name="梦境回放"><div class="wrap"><span class="eyebrow">梦境回放 Beta</span><h2 class="h2">早上醒来，看看你昨晚去了哪里。</h2><div class="shot"><canvas data-draw="${spec}"></canvas><p class="cap">${cap[0]}</p><p class="capt" data-g>${cap[1]}</p></div></div></section>`;
+  }
+  const items = c === 3
+    ? [['corr:-1', '第 1 晚 · 02:14', '一条走廊。'], ['corr:0', '第 2 晚 · 02:51', '同一条走廊。门口有人。'], ['corr:0.5', '第 3 晚 · 03:07', '同一条走廊。它走近了。'], ['room:coat', '第 4 晚 · 03:33', '这不是走廊。']]
+    : [['foot:sit', '成都 · 第 16 晚', '她坐起来了。她在跟我说话。'], ['foot:lie', '南京 · 第 41 晚', '他睡得很沉。'], ['foot:eyes', '#0417 · 第 4 晚', '他睁着眼睛。他以为我是衣服。'], ['foot:phone', '你那里 · <span data-live="now"></span>', `他还在看${NOUN}。等待中。`]];
+  const head = c === 3 ? '<span class="eyebrow">梦境回放 Beta</span><h2 class="h2">内测用户 #0417，连续四晚。</h2>' : '<span class="eyebrow">访客视角回放</span><h2 class="h2">从床尾看过去。</h2>';
+  const foot = c === 3 ? '<p class="fine" data-g>* 第 4 晚未检测到任何梦境。该用户当晚一直醒着。</p>' : '<p class="fine">* 画面来自访客的眼睛。</p>';
+  return `<section class="sec" data-name="梦境回放"><div class="wrap">${head}<div class="shots">${items.map(i => `<div><canvas data-draw="${i[0]}"></canvas><p class="cap">${i[1]}</p><p class="capt">${i[2]}</p></div>`).join('')}</div>${foot}</div></section>`;
+}
+
+function reviews(c) {
+  const Z = { n: '周婷', m: '杭州 · 睡眠评分 91', d: md(7), av: '#6B79E8', s: 5, t: '失眠五年，用了一周，入睡时间从一个多小时缩短到十分钟。终于不用数羊了。' };
+  const C1 = { n: '陈女士', m: '成都 · 睡眠评分 96', d: md(12), av: '#C98A5B', s: 5, t: '现在每晚能睡十个小时。我先生说我半夜会坐起来，朝着床尾说话。我一点都不记得，但我睡得很好。' };
+  const L1 = { n: '刘先生', m: '南京 · 睡眠评分 94', d: md(18), av: '#5B9C8A', s: 5, t: '以前半夜总被惊醒。现在醒了也不慌，闭上眼，听着那个声音叫我的名字，很快又睡着了。' };
+  const VA = '#1c1d23';
+  const list = {
+    1: [Z, C1, L1],
+    2: [Z, { ...C1, t: '现在每晚能睡十四个小时。我先生说我半夜会坐起来，朝着床尾说话，像在回答谁的问题。我一点都不记得，但我睡得很好。' }, { ...L1, m: '南京 · 已连续入睡 26 天' }],
+    3: [{ ...Z, m: '杭州 · 已连续入睡 9 天' },
+      { n: '陈女士的丈夫（代发）', a: '陈', m: '成都', d: md(0), av: '#8a7a6c', s: 1, bad: 1, t: '她已经睡了十六天，头环摘不下来。医生说她的脑电非常活跃，像是一直在看着什么。每天夜里三点多，她会坐起来，朝床尾点头。', reply: '<b>SOMNA 官方回复：</b>感谢反馈！她的睡眠评分是 98 分，超过了 99% 的用户，非常优秀 :)' },
+      { ...L1, m: '南京 · 已连续入睡 41 天', t: '睡得很好。睡得很好。睡得很好。睡得很好。', note: '该评价内容已由系统自动更新' },
+      { n: '匿名用户', a: '?', m: '账号已注销', av: '#8d8a84', s: 1, bad: 1, cut: 1, t: '千万别回答。它叫我名字的时候，用的是我妈的声音。我妈前年就已经', note: '该评价已被部分隐藏' }],
+    4: [{ n: '访客', a: '', m: '成都 · 第 16 晚', av: VA, s: 5, t: '这家的床很软。她睡得很沉。每天夜里，她会坐起来跟我说话。' },
+      { n: '访客', a: '', m: '南京 · 第 41 晚', av: VA, s: 5, t: '他醒过一次，看了我很久。后来他翻过身去，小声说：只是衣服。' },
+      { n: '访客', a: '', m: '#0417 · 第 4 晚', av: VA, s: 4, t: '他把须知读了十一遍。读到第七条的时候，我就过去了。' },
+      { n: '访客', a: '', m: '你那里 · 刚刚', av: VA, s: 2, live: 1, t: `这一位一直在看${NOUN}，我已经等了 <span data-live="elapsed"></span> 分钟。` }],
+    5: [{ n: '用户', a: '你', m: '你那里 · 睡眠评分 98', d: '刚刚', av: '#3F4BC9', s: 5, t: '睡得很好。' }, Z, C1, L1]
+  }[c];
+  return `<section class="sec" data-name="用户评价"><div class="wrap"><span class="eyebrow">${c === 4 ? '访客评价' : '用户评价'}</span><h2 class="h2">${c === 4 ? '访客们怎么说。' : '他们终于睡着了。'}</h2><div class="quotes">${list.map(card).join('')}</div></div></section>`;
+}
+function card(r) {
+  const plain = !r.cut && !r.live;
+  return `<div class="q${r.bad ? ' bad' : ''}"><span class="stars">${'★'.repeat(r.s)}${'☆'.repeat(5 - r.s)}</span><p ${plain ? 'data-g' : ''}>${r.t}${r.cut ? '<span class="cursor"></span>' : ''}</p>${r.reply ? `<div class="reply">${r.reply}</div>` : ''}${r.note ? `<span class="hidden-note">${r.note}</span>` : ''}<div class="who"><span class="av" style="background:${r.av}">${r.a !== undefined ? r.a : r.n[0]}</span><span>${r.n} · ${r.m}${r.d ? ' · ' + r.d : ''}</span></div></div>`;
+}
+
+function log(c) {
+  const base = [['v2.3.2', md(4), '修复：少数用户的梦境回放中，反复出现同一个人物。'], ['v2.3.1', md(16), '优化：语音引导现在会使用你最熟悉的声音。'], ['v2.3.0', md(25), '新增：梦境回放 Beta。']];
+  const L = {
+    1: base, 5: base,
+    2: [['v2.3.3', '今天 00:31', '说明：该人物无法从回放中移除。我们正在了解它。'], ...base],
+    3: [['v2.4.1', '今天 02:31', '床尾陪伴模式无法关闭。这是它的要求。'], ['v2.4.0', '今天 02:04', '新增：床尾陪伴模式（默认开启）。'], ['v2.3.3', '今天 00:31', '说明：该人物无法从回放中移除。我们正在了解它。'], ...base],
+    4: [['v2.4.4', '今天 03:41', `访客现在可以在用户看${NOUN}时，等待得更久。`], ['v2.4.3', '今天 03:33', '适配了更多房间布局，现已支持衣柜、门后和床底。'], ['v2.4.2', '今天 03:12', '删除了 v2.4.1 的更新说明。'], ['v2.4.0', '今天 02:04', '新增：床尾陪伴模式。']]
+  }[c];
+  return `<section class="sec" data-name="更新日志"><div class="wrap"><span class="eyebrow">更新日志</span><h2 class="h2">${c === 4 ? '访客版更新日志。' : '我们一直在改进。'}</h2><div class="log">${L.map(([v, d, t]) => `<div><span class="v">${v}</span><span class="d">${d}</span><p data-g>${t}</p></div>`).join('')}</div></div></section>`;
+}
+
+function forum(c) {
+  const base = [['回放里的人每天都在靠近，正常吗？', '37 回复 · 最后回复 03:12'], ['有没有人试过在回放里开门？', '0 回复'], ['听见我妈在叫我，差点就答应了', '12 回复 · 最后回复 02:04'], ['衣服是我自己挂的吗？', '5 回复 · 最后回复 昨天']];
+  const P = c === 3 ? [...base, ['它今晚到床尾了', '发帖人 #0417 · 无回复']]
+    : [[`这一位还在看${NOUN}`, '发帖人 访客 · 刚刚 · 2,184,329 人在看'], ...base, ['它今晚到床尾了', '发帖人 #0417 · 1 条回复：「我还在。」']];
+  return `<section class="sec" data-name="社区"><div class="wrap"><span class="eyebrow">${c === 4 ? '访客社区' : '用户社区'}</span><h2 class="h2">${c === 4 ? '大家都在等。' : '大家都在聊什么。'}</h2><div class="forum">${P.map(p => `<button data-toast="${c === 4 ? '无法查看|这个帖子只对还醒着的人隐藏。' : '无法查看|这个帖子需要在睡着之后才能查看。'}"><b>${p[0]}</b><small>${p[1]}</small></button>`).join('')}</div></div></section>`;
+}
+
+function team(c) {
+  const P = [['周牧', '创始人 · CEO', '我们想让每个人都睡个好觉。', '#3F4BC9', 63], ['林晓', '首席科学家', '梦，是大脑在整理白天。', '#C98A5B', 58], ['何川', '产品负责人', '最好的产品，是你感觉不到它的存在。', '#5B9C8A', 41]];
+  return `<section class="sec" data-name="关于我们"><div class="wrap"><span class="eyebrow">关于我们</span><h2 class="h2">我们自己，也每晚都戴着它。</h2><div class="team">${P.map(p => `<div class="person"><span class="av" style="background:${p[3]}">${p[0][0]}</span><h3>${p[0]}</h3><div class="role">${p[1]}</div>${c === 3 ? `<div class="status">休眠中 · 第 ${p[4]} 天</div>` : ''}<p>${p[2]}</p></div>`).join('')}</div></div></section>`;
+}
+
+function report(c) {
+  const el = '<span data-live="elapsed"></span> 分钟', up = '<span data-live="ups"></span> 次', aw = '<span data-live="aways"></span> 次';
+  let eb, title, rows, tail;
+  if (c === 2) {
+    eb = '你的今晚'; title = '体验报告。';
+    rows = [['开始浏览', hhmm(new Date(S.t0))], ['已浏览', el], ['向上回看', up], ['当前状态', '清醒']];
+    tail = `<p class="tip">你还没有睡着。按照须知第 2 条，睡前一小时，尽量不要再看${NOUN}。</p>`;
+  } else if (c === 3) {
+    eb = '你的今晚'; title = '你在找什么？';
+    rows = [['已浏览', el], ['向上回看', up], ['离开页面', aw], ['停留最久', '「<span data-live="dwell"></span>」']];
+    tail = '<p class="tip">你回头看的时候，有没有发现什么不一样？</p><p class="tip">我们没有改过任何东西。</p>';
+  } else {
+    const s2 = Math.round(((S.dwell[2] || {})['开始之前']) || 0);
+    eb = '目标用户'; title = '关于这一位。';
+    rows = [['本地时间', '<span data-live="now"></span>'], ['时区', `${TZ} · ${UTC}`], ['设备', DEV], ['已浏览', el], ['向上回看', up], ['离开页面', aw], ['第 2 周期在「开始之前」停留', `${s2} 秒`]];
+    tail = `<p class="tip em">${s2 >= 8 ? '他数过了。按守则第 6 条，请立即靠近。' : '他还没有数。继续等待。'}</p><p class="tip">当前状态：清醒，正在看${NOUN}。屏幕很亮。</p><p class="tip">建议：等待。</p>`;
+  }
+  return `<section class="sec" data-name="报告"><div class="wrap"><span class="eyebrow">${eb}</span><h2 class="h2">${title}</h2><div class="report">${rows.map(r => `<div class="kv"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}${tail}</div></div></section>`;
+}
+
+function faq(c) {
+  const Q = {
+    1: [['头环戴着会不舒服吗？', '只有 38 克，柔软硅胶，侧睡也不硌。大多数人第三晚就感觉不到它了。'], ['梦境回放准确吗？', '目前准确率约 71%，会随使用时间越来越清晰。'], ['为什么我的回放里总有一扇门？', '门是梦里最常见的意象之一，通常代表过渡和改变。不用担心。'], ['可以取消订阅吗？', '可以，随时在 App 里取消。']],
+    2: [['头环戴着会不舒服吗？', '只有 38 克，柔软硅胶，侧睡也不硌。大多数人第三晚就感觉不到它了。'], ['梦境回放准确吗？', '目前准确率约 71%，会随使用时间越来越清晰。'], ['为什么我的回放里总有一扇门？', '门是梦里最常见的意象之一，通常代表过渡和改变。不用担心。'], ['回放里的门后面是什么？', '我们也不知道。内测用户 #0417 说他想进去看看。我们建议不要。'], ['可以取消订阅吗？', '可以，随时在 App 里取消。取消后，头环会在下一个睡眠周期自动解除。']],
+    3: [['头环戴着会不舒服吗？', '大多数人第三晚就感觉不到它了。第七晚，就感觉不到自己的手了。'], ['为什么我的回放里总有一扇门？', '门代表过渡。它在从那边过来。'], ['半夜醒来动不了，正常吗？', '这叫睡眠瘫痪，很常见，一般几分钟就会过去。在这期间，请不要看向床尾。'], ['内测用户 #0417 现在怎么样了？', '他睡得很好。'], ['可以取消订阅吗？', '<span class="redact">不可以不可以不可以不可以</span>']],
+    4: [['用户发现我了怎么办？', '不要动。他们几乎总能说服自己，那只是一件挂着的衣服。'], ['用户一直不睡怎么办？', '等。他们都会睡的。这一位已经很累了。'], ['天亮之前要离开吗？', '离开床尾就可以。衣柜里、门后、床底下都行。'], ['用户问“你是谁”怎么办？', '用他最熟悉的声音回答。']]
+  };
+  Q[5] = Q[1];
+  return `<section class="sec" data-name="常见问题"><div class="wrap"><span class="eyebrow">常见问题</span><h2 class="h2">${c === 4 ? '访客常见问题。' : '你可能想知道的。'}</h2><div class="faq">${Q[c].map(q => `<div><h3>${q[0]}</h3><p ${q[1].includes('<') ? '' : 'data-g'}>${q[1]}</p></div>`).join('')}</div></div></section>`;
+}
+
+function cta(c) {
+  const H = { 1: '今晚，闭上眼睛。<br>剩下的，交给我们。', 2: '今晚，闭上眼睛。<br>剩下的，交给我们。', 3: '今晚，闭上眼睛。<br>不要回答。', 4: '他快睡着了。<br>再等一会儿。', 5: '今晚，闭上眼睛。<br>剩下的，交给我们。' }[c];
+  const B = c === 4 ? '<button class="btn btn-pri" data-toast="继续等待|他的眼皮开始变重了。">继续等待</button>' : '<button class="btn btn-pri" data-toast="你已经开始了|今晚 0:00 生效。">开始免费试睡</button>';
+  const tag = { 1: '让每个人都睡个好觉。', 2: '让每个人都睡个好觉。', 3: '让每个人都睡个好觉，并且一直睡下去。', 4: '让每一位访客，都找到一张床。', 5: '让每个人都睡个好觉。' }[c];
+  const note = { 1: 'SOMNA 不是医疗器械。', 2: 'SOMNA 不是医疗器械。', 3: 'SOMNA 不是医疗器械，不对你在夜间看到的任何东西负责。', 4: 'SOMNA 不对用户在夜间看到的任何东西负责。我们建议访客站在暗处。', 5: 'SOMNA 不是医疗器械。' }[c];
+  const help = c === 3 ? '<span data-later="救命">帮助中心</span>' : '帮助中心';
+  return `<section data-name="结尾"><div class="cta wrap"><h2>${H}</h2>${B}</div><footer class="foot"><div class="wrap"><div class="foot-grid"><div><div class="logo" style="color:var(--ink)"><span class="moon"></span>SOMNA</div><p style="margin-top:14px;max-width:22em">${tag}</p></div><div><h4>产品</h4><ul><li>SOMNA 2 头环</li><li>梦境回放</li><li>助眠音</li></ul></div><div><h4>公司</h4><ul><li>关于我们</li><li>加入我们</li><li>新闻</li></ul></div><div><h4>支持</h4><ul><li>${help}</li><li>退货政策</li><li>联系我们</li></ul></div></div><div class="foot-bottom"><span>© 2026 SOMNA 睡眠科技（上海）有限公司</span><span data-g>${note}</span></div></div></footer></section>`;
+}
+
+const INTER = {
+  1: { h: 320, clock: '00:31', lines: [[0.06, 0.22, '你翻了个身。'], [0.22, 0.4, '头环的指示灯闪了一下。'], [0.4, 0.56, '蓝色。'], [0.56, 0.72, '没事。'], [0.72, 0.97, '继续睡吧。']] },
+  2: { h: 440, clock: '02:04', whisper: [0.07, 0.2], lines: [[0.05, 0.18, '你好像听见有人在叫你的名字。'], [0.18, 0.3, '很轻。就在耳边。'], [0.3, 0.48, '是助眠音的语音引导。须知第 6 条说过，这是正常的。'], [0.48, 0.6, '继续睡吧。'], [0.6, 0.7, '……'], [0.7, 0.97, '可是，你从来没有告诉过 SOMNA 你的名字。', 'r']] },
+  3: { h: 1050, clock: '03:33', scene: 1, lines: [[0.06, 0.11, '你醒了。'], [0.11, 0.16, '但你动不了。'], [0.16, 0.22, '这叫睡眠瘫痪。很常见，一般几分钟就会过去。'], [0.22, 0.28, '头环的指示灯是红色的。', 'r'], [0.28, 0.35, '床尾有一个黑色的影子。'], [0.35, 0.41, '是挂着的衣服。'], [0.41, 0.48, '你今晚把衣服挂在那里了吗？'], [0.48, 0.54, '……你想不起来了。'], [0.54, 0.6, '别盯着它看。'], [0.6, 0.66, '如果它只是衣服，它就不会动。'], [0.66, 0.72, '它没有动。'], [0.72, 0.77, '它没有动。'], [0.77, 0.84, '闭上眼睛。'], [0.84, 0.89, '……'], [0.9, 0.98, '它没有动，是因为你一直在看它。', 'r']] },
+  4: { h: 760, clock: '05:12', scene: 1, lines: [[0.05, 0.11, '05:12。你还醒着。'], [0.11, 0.17, `你在看${NOUN}。屏幕的光照着你的脸。`], [0.17, 0.23, '床尾那件衣服还在。'], [0.23, 0.29, '“如果用户在看手机，请等待。”', 'qt'], [0.29, 0.345, '所以，只要你一直看着屏幕，你就是安全的。'], [0.35, 0.41, '{ANS}'], [0.41, 0.47, '“他每回答一次，你就可以靠近一步。”', 'qt'], [0.47, 0.53, '那件衣服，往前走了一步。', 'r'], [0.53, 0.59, `它在等你放下${NOUN}。`], [0.59, 0.65, '别放下。一直看着屏幕。'], [0.65, 0.72, '只要屏幕还亮着——']] }
+};
+function inter(c) {
+  const I = INTER[c];
+  return `<section class="inter" data-name="夜里" style="height:${I.h}vh"><div class="inter-in">${I.scene ? '<canvas class="scene"></canvas>' : ''}<div class="ind"></div><div class="lid top"></div><div class="lid bot"></div><div class="clock">${I.clock}</div><div class="subs">${I.lines.map(l => `<p data-a="${l[0]}" data-b="${l[1]}" class="${l[3] || ''}"${l[2] === '{ANS}' ? ' id="ansLine"' : ''}>${l[2] === '{ANS}' ? '' : l[2]}</p>`).join('')}</div></div></section>`;
+}
+
+function final() {
+  const L = [
+    ['早上好。'], ['你醒了吗？'], ['确认一下吧。'],
+    ['在梦里，文字和时间都没法保持不变。你移开视线，再看回来，它们就会变。'],
+    ['记住这个时间。', 'rc'],
+    ['好。现在往回滑一点，再看它一眼。', 'gap'],
+    ['它变了，对吗？'], ['所以，你还在睡。'], ['这不是早上。'],
+    ['屏幕熄灭以后，你看见了什么？'], ['你不记得了。'], ['没关系。它记得。', 'gap'],
+    ['今晚睡觉前，看一眼你的床尾。'],
+    ['如果那里挂着一件衣服——'], ['你确定，是你自己挂上去的吗？']
+  ];
+  const body = L.map(l => l[1] === 'rc' ? `<p>${l[0]}</p><div class="rc" id="rc"><span class="k">现在时间</span><b>07:00</b></div>` : `<p class="${l[1] || ''}">${l[0]}</p>`).join('');
+  return `<section class="final" data-name="早上"><div class="fl">${body}</div><div class="end"><p class="gn">晚安。</p><button class="again" id="again">再睡一晚</button></div></section>`;
+}
+
+const PLAN = {
+  1: [hero, stats, features, rules, replay, reviews, log, team, faq, cta, inter],
+  2: [hero, stats, features, rules, replay, reviews, log, report, team, faq, cta, inter],
+  3: [hero, stats, features, rules, replay, reviews, log, forum, team, report, faq, cta, inter],
+  4: [hero, stats, rules, replay, reviews, log, forum, report, faq, cta, inter],
+  5: [hero, stats, features, rules, replay, reviews, log, team, faq, cta, final]
+};
+const NAV = { 1: ['产品', '须知', '回放', '评价'], 2: ['产品', '须知', '回放', '评价'], 3: ['产品', '须知', '回放', '救命'], 4: ['房间', '守则', '回放', '等待'], 5: ['产品', '须知', '回放', '评价'] };
+
+/* ================= drawing ================= */
+const HYP_COL = ['#F0A45D', '#73B4F5', '#6574E3', '#2F338F'];
+const HYPS = (() => {
+  const c2 = [[0, 8], [2, 14], [3, 40], [2, 18], [1, 9], [0, 2]];
+  const c3 = [...c2, [2, 20], [3, 40], [2, 20], [1, 11], [0, 2]];
+  return {
+    1: { segs: [[0, 8], [2, 14], [3, 48], [2, 22], [1, 14], [2, 36], [3, 34], [2, 28], [1, 22], [2, 26], [0, 6], [2, 30], [1, 28], [2, 26], [3, 14], [2, 28], [1, 34], [2, 18], [1, 20], [0, 4]], full: 1 },
+    2: { segs: c2 }, 3: { segs: c3 },
+    5: { segs: [...c3, [2, 20], [3, 30], [2, 20], [1, 17], [0, 2], [2, 30], [3, 20], [2, 25], [1, 22], [0, 2], [2, 30], [1, 40], [2, 20], [1, 18]], full: 1 }
+  };
+})();
+function drawHyp(cv, c) {
+  const H0 = HYPS[c]; if (!H0) return;
+  const g = cv.getContext('2d'), W = cv.width, H = cv.height; g.clearRect(0, 0, W, H);
+  const total = H0.full ? H0.segs.reduce((s, x) => s + x[1], 0) : 480, rh = H / 4;
+  let x = 0, prevY = null;
+  H0.segs.forEach(([st, m]) => {
+    const w = m / total * W, y = st * rh + rh * 0.2, h = rh * 0.6;
+    if (prevY !== null) { g.fillStyle = 'rgba(120,124,140,.25)'; const y0 = Math.min(prevY, y), y1 = Math.max(prevY, y) + h; g.fillRect(x - 0.5 * DPR, y0, DPR, y1 - y0); }
+    g.fillStyle = HYP_COL[st]; g.beginPath();
+    if (g.roundRect) g.roundRect(x + DPR, y, Math.max(2, w - 2 * DPR), h, 3 * DPR); else g.rect(x + DPR, y, Math.max(2, w - 2 * DPR), h);
+    g.fill(); prevY = y; x += w;
+  });
+  if (!H0.full) { g.strokeStyle = 'rgba(120,124,140,.35)'; g.setLineDash([3 * DPR, 4 * DPR]); g.lineWidth = DPR; g.beginPath(); g.moveTo(x + 4 * DPR, H / 2); g.lineTo(W, H / 2); g.stroke(); g.setLineDash([]); }
+}
+
+function eegVal(t, mode) {
+  const n = (noise(t * 90) - 0.5) * 0.35 + (noise(t * 23 + 7) - 0.5) * 0.3;
+  switch (mode) {
+    case 'alpha': return 0.55 * Math.sin(TAU * 10.2 * t) * (0.6 + 0.4 * Math.sin(TAU * 0.4 * t)) + n;
+    case 'theta': return 0.6 * Math.sin(TAU * 6 * t + 0.6 * Math.sin(TAU * 0.7 * t)) + n * 1.2;
+    case 'beta': return 0.3 * Math.sin(TAU * 21 * t) + 0.22 * Math.sin(TAU * 17.3 * t) + n * 1.4;
+    case 'odd': { if (noise(t * 0.7 + 3) > 0.74) return n * 0.08; return 0.8 * Math.sin(TAU * 1.1 * t) * Math.sin(TAU * 7 * t) + n; }
+  }
+  return n;
+}
+function drawEEG(cv, t, mode) {
+  const g = cv.getContext('2d'), W = cv.width, H = cv.height;
+  g.clearRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(128,128,150,.12)'; g.lineWidth = 1;
+  for (let i = 1; i < 4; i++) { g.beginPath(); g.moveTo(0, H * i / 4); g.lineTo(W, H * i / 4); g.stroke(); }
+  const pass = (m, col, off, amp) => {
+    g.strokeStyle = col; g.lineWidth = 1.4 * DPR; g.beginPath();
+    for (let x = 0; x <= W; x += 2) { const v = eegVal(t - (W - x) / (140 * DPR) + off, m), y = H / 2 - v * H * 0.34 * amp; x ? g.lineTo(x, y) : g.moveTo(x, y); }
+    g.stroke();
+  };
+  const acc = ACC;
+  if (mode === 'two') { pass('odd', 'rgba(200,50,50,.6)', 17.3, 0.9); pass('theta', acc, 0, 1); }
+  else pass(mode, acc, 0, 1);
+}
+
+function drawFigure(c, x, feetY, H, o = {}) {
+  const col = o.color || '#020203', headR = H * 0.052, sw = H * 0.098, hw = H * 0.06;
+  const shY = feetY - H * 0.8, hipY = feetY - H * 0.46, neckTop = feetY - H * 0.86, hx = x, hy = feetY - H + headR * 1.1;
+  c.save(); c.fillStyle = col; c.strokeStyle = col; c.lineCap = 'round'; c.lineJoin = 'round';
+  if (o.blur) { c.shadowColor = col; c.shadowBlur = o.blur; }
+  c.beginPath(); c.moveTo(x - H * 0.022, neckTop);
+  c.quadraticCurveTo(x - sw * 0.6, shY - H * 0.012, x - sw, shY + H * 0.01); c.quadraticCurveTo(x - sw * 0.9, (shY + hipY) / 2, x - hw, hipY);
+  c.lineTo(x - hw * 0.85, feetY); c.lineTo(x - hw * 0.15, feetY); c.lineTo(x, hipY + H * 0.06); c.lineTo(x + hw * 0.15, feetY); c.lineTo(x + hw * 0.85, feetY); c.lineTo(x + hw, hipY);
+  c.quadraticCurveTo(x + sw * 0.9, (shY + hipY) / 2, x + sw, shY + H * 0.01); c.quadraticCurveTo(x + sw * 0.6, shY - H * 0.012, x + H * 0.022, neckTop);
+  c.closePath(); c.fill();
+  c.lineWidth = H * 0.03; c.beginPath(); c.moveTo(x, neckTop + H * 0.01); c.lineTo(hx, hy + headR * 0.5); c.stroke();
+  c.beginPath(); c.ellipse(hx, hy, headR * 0.82, headR * 1.1, 0, 0, TAU); c.fill();
+  [-1, 1].forEach(s => {
+    const sx = x + s * sw * 0.92, sy = shY + H * 0.02, hxx = x + s * sw * 1.08, hyy = feetY - H * 0.15;
+    c.lineWidth = H * 0.024; c.beginPath(); c.moveTo(sx, sy); c.quadraticCurveTo(x + s * sw * 1.2, feetY - H * 0.52, hxx, hyy); c.stroke();
+    c.lineWidth = H * 0.0065;
+    for (let k = 0; k < 4; k++) { const fx = hxx + (k - 1.5) * H * 0.006; c.beginPath(); c.moveTo(fx, hyy); c.quadraticCurveTo(fx + (k - 1.5) * H * 0.004, hyy + H * 0.035, fx + (k - 1.5) * H * 0.007, hyy + H * 0.07); c.stroke(); }
+  });
+  c.restore();
+  if (o.eyes > 0) glints(c, hx, hy - headR * 0.05, headR * 0.3, Math.max(1.3, H * 0.0045), o.eyes);
+}
+function glints(c, x, y, dx, r, a) {
+  [-1, 1].forEach(s => {
+    const px = x + s * dx, g = c.createRadialGradient(px, y, 0, px, y, r * 5);
+    g.addColorStop(0, `rgba(245,240,230,${a})`); g.addColorStop(0.22, `rgba(230,224,214,${a * 0.5})`); g.addColorStop(1, 'rgba(230,224,214,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(px, y, r * 5, 0, TAU); c.fill();
+  });
+}
+function drawCoat(c, x, top, H, m = 0, tilt = 0, col = '#030304', eyes = 0) {
+  c.save(); c.fillStyle = col; c.strokeStyle = col; c.lineCap = 'round'; c.lineJoin = 'round';
+  const nx = x + Math.sin(tilt) * H * 0.05, hy = top + H * 0.035;
+  if (m < 1) { c.globalAlpha = 1 - m; c.lineWidth = H * 0.009; c.beginPath(); c.moveTo(x, top + H * 0.075); c.lineTo(x, top + H * 0.032); c.arc(x + H * 0.018, top + H * 0.032, H * 0.018, Math.PI, Math.PI * 1.95); c.stroke(); c.globalAlpha = 1; }
+  if (m > 0) {
+    c.globalAlpha = Math.min(1, m * 1.3); const k = 0.55 + 0.45 * m;
+    c.beginPath(); c.ellipse(nx, hy, H * 0.034 * k, H * 0.045 * k, tilt * 1.5, 0, TAU); c.fill();
+    c.lineWidth = H * 0.032 * m; c.beginPath(); c.moveTo(x, top + H * 0.08); c.lineTo(nx, hy + H * 0.02); c.stroke(); c.globalAlpha = 1;
+  }
+  const sh = H * 0.15 + m * H * 0.012;
+  c.beginPath(); c.moveTo(x - H * 0.03, top + H * 0.07);
+  c.quadraticCurveTo(x - sh * 0.7, top + H * 0.075, x - sh, top + H * 0.12 - m * H * 0.015);
+  c.quadraticCurveTo(x - sh * 1.05, top + H * 0.35, x - sh * 1.02, top + H * 0.6); c.lineTo(x - sh * 1.18, top + H * 0.95);
+  c.lineTo(x + sh * 1.18, top + H * 0.95); c.lineTo(x + sh * 1.02, top + H * 0.6);
+  c.quadraticCurveTo(x + sh * 1.05, top + H * 0.35, x + sh, top + H * 0.12 - m * H * 0.015);
+  c.quadraticCurveTo(x + sh * 0.7, top + H * 0.075, x + H * 0.03, top + H * 0.07); c.closePath(); c.fill();
+  [-1, 1].forEach(s => {
+    const ex = x + s * sh * (1.22 + m * 0.12), ey = top + H * (0.66 + m * 0.07);
+    c.lineWidth = H * 0.055; c.beginPath(); c.moveTo(x + s * sh * 0.98, top + H * 0.15); c.quadraticCurveTo(x + s * sh * 1.32, top + H * 0.4, ex, ey); c.stroke();
+    if (m > 0.3) { c.globalAlpha = (m - 0.3) / 0.7; c.lineWidth = H * 0.008; for (let k = 0; k < 4; k++) { const fx = ex + (k - 1.5) * H * 0.01; c.beginPath(); c.moveTo(fx, ey); c.lineTo(fx + (k - 1.5) * H * 0.004, ey + H * 0.07 * m); c.stroke(); } c.globalAlpha = 1; }
+  });
+  c.strokeStyle = 'rgba(70,76,96,.22)'; c.lineWidth = H * 0.004; c.beginPath(); c.moveTo(x - H * 0.03, top + H * 0.07); c.lineTo(x, top + H * 0.22); c.lineTo(x + H * 0.03, top + H * 0.07); c.stroke();
+  c.restore();
+  if (eyes > 0) glints(c, nx, hy, H * 0.011, Math.max(1.2, H * 0.004), eyes);
+}
+
+function drawCorridor(cv, dist, coat) {
+  const c = cv.getContext('2d'), W = cv.width, H = cv.height;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#08090c'; c.fillRect(0, 0, W, H);
+  const cx = W * 0.5, cy = H * 0.47, iw = W * 0.18, ih = H * 0.36, ix = cx - iw / 2, iy = cy - ih / 2;
+  c.fillStyle = '#0c0d11'; poly(c, [[0, 0], [W, 0], [ix + iw, iy], [ix, iy]]);
+  let g = c.createLinearGradient(0, iy + ih, 0, H); g.addColorStop(0, '#121318'); g.addColorStop(1, '#1c1d22'); c.fillStyle = g; poly(c, [[0, H], [W, H], [ix + iw, iy + ih], [ix, iy + ih]]);
+  g = c.createLinearGradient(0, 0, ix, 0); g.addColorStop(0, '#1a1b21'); g.addColorStop(1, '#0e0f13'); c.fillStyle = g; poly(c, [[0, 0], [ix, iy], [ix, iy + ih], [0, H]]);
+  g = c.createLinearGradient(W, 0, ix + iw, 0); g.addColorStop(0, '#16171c'); g.addColorStop(1, '#0d0e12'); c.fillStyle = g; poly(c, [[W, 0], [ix + iw, iy], [ix + iw, iy + ih], [W, H]]);
+  c.fillStyle = '#0f1014'; c.fillRect(ix, iy, iw, ih);
+  const T = (k, s) => lerp(0, iy, k) + (lerp(H, iy + ih, k) - lerp(0, iy, k)) * s, X = (k, side) => side < 0 ? lerp(0, ix, k) : lerp(W, ix + iw, k);
+  [[0.18, 0.3], [0.5, 0.58]].forEach(([k0, k1]) => [-1, 1].forEach(sd => { c.fillStyle = '#07080a'; poly(c, [[X(k0, sd), T(k0, 0.25)], [X(k1, sd), T(k1, 0.25)], [X(k1, sd), T(k1, 1)], [X(k0, sd), T(k0, 1)]]); }));
+  [0.12, 0.42, 0.66, 0.82].forEach((k, i) => { const y = lerp(0, iy, k) + 4, w = lerp(W * 0.22, iw * 0.3, k); c.fillStyle = `rgba(210,208,195,${i === 1 ? 0.05 : 0.28 * (1 - k) + 0.06})`; c.fillRect(cx - w / 2, y, w, Math.max(2, lerp(H * 0.02, 2, k))); });
+  const dw = iw * 0.34, dh = ih * 0.72, dx = cx - dw / 2, dy = iy + ih - dh;
+  g = c.createLinearGradient(0, dy, 0, dy + dh); g.addColorStop(0, '#3d3c39'); g.addColorStop(1, '#2a2926'); c.fillStyle = g; c.fillRect(dx, dy, dw, dh);
+  g = c.createRadialGradient(cx, iy + ih, 0, cx, iy + ih, W * 0.3); g.addColorStop(0, 'rgba(120,118,110,.18)'); g.addColorStop(1, 'rgba(120,118,110,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  if (coat) { const k = 0.4, top = T(k, 0.22), hh = (T(k, 1) - T(k, 0)) * 0.5; drawCoat(c, X(k, 1) - hh * 0.1, top, hh, 0, 0, '#040405'); }
+  if (dist >= 0) { const e = Math.pow(dist, 1.6); drawFigure(c, cx + W * 0.004, lerp(iy + ih, H * 1.06, e), lerp(dh * 0.95, H * 1.2, e), { eyes: dist > 0.3 ? 0.75 : 0, blur: 2 * DPR }); }
+  c.fillStyle = 'rgba(70,90,120,.1)'; c.fillRect(0, 0, W, H);
+  g = c.createRadialGradient(cx, cy, Math.min(W, H) * 0.2, cx, cy, Math.max(W, H) * 0.75); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.8)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+}
+
+function drawRoom(cv, o) {
+  const c = cv.getContext('2d'), W = cv.width, H = cv.height, s = H / 1000, ox = (W - 1000 * s) / 2, dw = o.dawn || 0;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#05060a'; c.fillRect(0, 0, W, H);
+  c.setTransform(s, 0, 0, s, ox, 0);
+  let g = c.createLinearGradient(0, 40, 0, 660); g.addColorStop(0, mixc('#0a0c12', '#181b23', dw)); g.addColorStop(1, mixc('#0e1017', '#1b1e26', dw)); c.fillStyle = g; c.fillRect(120, 40, 760, 620);
+  c.fillStyle = mixc('#04050a', '#0b0c11', dw); poly(c, [[-3000, -600], [120, 40], [120, 660], [-3000, 1600]]); poly(c, [[4000, -600], [880, 40], [880, 660], [4000, 1600]]);
+  c.fillStyle = mixc('#030407', '#08090d', dw); poly(c, [[-3000, -600], [4000, -600], [880, 40], [120, 40]]);
+  g = c.createRadialGradient(480, 390, 10, 480, 390, 310); g.addColorStop(0, `rgba(80,94,132,${0.32 + dw * 0.12})`); g.addColorStop(1, 'rgba(80,94,132,0)'); c.fillStyle = g; c.fillRect(120, 40, 760, 620);
+  g = c.createLinearGradient(0, 170, 0, 400); g.addColorStop(0, mixc('#24304a', '#7a8494', dw)); g.addColorStop(1, mixc('#141a2a', '#505868', dw)); c.fillStyle = g; c.fillRect(200, 170, 120, 230);
+  c.fillStyle = '#07080b'; c.fillRect(257, 170, 6, 230); c.fillRect(200, 280, 120, 6);
+  c.fillStyle = '#05060a';
+  c.beginPath(); c.moveTo(165, 150); c.lineTo(222, 150); c.bezierCurveTo(212, 260, 226, 340, 214, 430); c.lineTo(160, 430); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(300, 150); c.lineTo(352, 150); c.lineTo(356, 430); c.lineTo(306, 430); c.bezierCurveTo(296, 330, 310, 250, 300, 150); c.closePath(); c.fill();
+  c.fillStyle = '#0a0b0f'; c.fillRect(596, 226, 128, 438);
+  g = c.createLinearGradient(0, 236, 0, 660); g.addColorStop(0, '#111216'); g.addColorStop(1, '#17181d'); c.fillStyle = g; c.fillRect(606, 236, 108, 424);
+  c.fillStyle = '#08090c'; poly(c, [[714, 236], [772, 212], [772, 686], [714, 660]]);
+  c.fillStyle = '#030305'; c.fillRect(930, 480, 260, 240); c.fillRect(-260, 380, 260, 340);
+  if (o.coat && !o.coat.front) drawCoat(c, o.coat.x, o.coat.top, o.coat.H, o.coat.m, o.coat.tilt, '#020203', o.coat.eyes || 0);
+  const pk = o.peek || 0;
+  if (pk > 0) { c.fillStyle = '#020203'; c.beginPath(); c.ellipse(500, lerp(720, 600, pk), 58, 66, 0, 0, TAU); c.fill(); if (pk > 0.86) glints(c, 500, lerp(720, 600, pk) - 6, 20, 2.4, sm(0.86, 1, pk) * 0.9); }
+  c.fillStyle = '#0b0c10'; c.fillRect(140, 640, 720, 40); c.fillStyle = 'rgba(140,150,185,.1)'; c.fillRect(140, 640, 720, 2);
+  if (pk > 0.45) { c.fillStyle = `rgba(2,2,3,${sm(0.45, 0.7, pk)})`; [[418, 0], [442, 0], [466, 0], [534, 0], [558, 0], [582, 0]].forEach(([x]) => { c.beginPath(); c.ellipse(x, 646, 9, 15, 0, 0, TAU); c.fill(); }); }
+  g = c.createLinearGradient(0, 640, 0, 1000); g.addColorStop(0, mixc('#1b1d26', '#2a2c34', dw)); g.addColorStop(1, '#0a0b0f'); c.fillStyle = g;
+  c.beginPath(); c.moveTo(-400, 1000); c.lineTo(-400, 830); c.bezierCurveTo(-100, 760, 200, 720, 380, 698);
+  c.bezierCurveTo(400, 640, 460, 640, 478, 692); c.bezierCurveTo(500, 700, 520, 700, 540, 690);
+  c.bezierCurveTo(556, 640, 618, 642, 626, 698); c.bezierCurveTo(800, 720, 1100, 760, 1400, 830); c.lineTo(1400, 1000); c.closePath(); c.fill();
+  c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = 8;
+  [[300, 1000, 420, 820, 470, 710], [700, 1000, 600, 820, 540, 710], [80, 1000, 200, 880, 330, 760]].forEach(a => { c.beginPath(); c.moveTo(a[0], a[1]); c.quadraticCurveTo(a[2], a[3], a[4], a[5]); c.stroke(); });
+  if (pk > 0) { g = c.createRadialGradient(500, 720, 10, 500, 720, 260); g.addColorStop(0, `rgba(0,0,0,${0.55 * pk})`); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(150, 600, 700, 400); }
+  if (o.coat && o.coat.front) drawCoat(c, o.coat.x, o.coat.top, o.coat.H, o.coat.m, o.coat.tilt, '#020203', o.coat.eyes || 0);
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  if (o.glow > 0) { g = c.createRadialGradient(W / 2, H * 1.08, 0, W / 2, H * 1.08, H * 0.85); g.addColorStop(0, `rgba(170,192,240,${0.22 * o.glow})`); g.addColorStop(1, 'rgba(170,192,240,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H); }
+  if (o.red > 0) { g = c.createRadialGradient(W / 2, 0, 0, W / 2, 0, Math.max(W, H) * 0.65); g.addColorStop(0, `rgba(255,25,25,${0.17 * o.red})`); g.addColorStop(1, 'rgba(255,25,25,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H); }
+  c.fillStyle = 'rgba(40,55,90,.06)'; c.fillRect(0, 0, W, H);
+  g = c.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.25, W / 2, H * 0.45, Math.max(W, H) * 0.8); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.85)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+}
+
+function drawFootView(cv, kind) {
+  const c = cv.getContext('2d'), W = cv.width, H = cv.height;
+  c.setTransform(W / 1000, 0, 0, H / 750, 0, 0);
+  c.fillStyle = '#060708'; c.fillRect(0, 0, 1000, 750);
+  let g = c.createLinearGradient(0, 0, 0, 360); g.addColorStop(0, '#0b0c0f'); g.addColorStop(1, '#121317'); c.fillStyle = g; c.fillRect(0, 0, 1000, 360);
+  c.fillStyle = '#08090b'; poly(c, [[0, 0], [180, 0], [180, 360], [0, 750]]); poly(c, [[1000, 0], [820, 0], [820, 360], [1000, 750]]);
+  c.fillStyle = 'rgba(70,82,110,.2)'; poly(c, [[40, 120], [140, 140], [140, 300], [40, 330]]);
+  c.fillStyle = '#0a0a0d'; c.beginPath(); c.moveTo(330, 360); c.lineTo(330, 250); c.quadraticCurveTo(500, 215, 670, 250); c.lineTo(670, 360); c.closePath(); c.fill();
+  g = c.createLinearGradient(0, 340, 0, 750); g.addColorStop(0, '#1a1b21'); g.addColorStop(1, '#0e0f13'); c.fillStyle = g; poly(c, [[320, 345], [680, 345], [900, 700], [100, 700]]);
+  c.fillStyle = '#23242b'; c.beginPath(); c.ellipse(500, 362, 125, 28, 0, 0, TAU); c.fill();
+  g = c.createLinearGradient(0, 380, 0, 700); g.addColorStop(0, '#25262d'); g.addColorStop(1, '#16171c'); c.fillStyle = g;
+  c.beginPath(); c.moveTo(430, 392); c.bezierCurveTo(395, 480, 375, 600, 355, 700); c.lineTo(645, 700); c.bezierCurveTo(625, 600, 605, 480, 570, 392); c.closePath(); c.fill();
+  c.fillStyle = '#050506';
+  if (kind === 'sit') {
+    c.beginPath(); c.moveTo(440, 400); c.quadraticCurveTo(430, 300, 445, 268); c.quadraticCurveTo(500, 250, 555, 268); c.quadraticCurveTo(572, 300, 562, 400); c.closePath(); c.fill();
+    c.beginPath(); c.ellipse(512, 222, 32, 38, 0.18, 0, TAU); c.fill();
+    c.lineWidth = 16; c.strokeStyle = '#050506'; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(448, 285); c.quadraticCurveTo(425, 340, 438, 392); c.stroke(); c.beginPath(); c.moveTo(552, 285); c.quadraticCurveTo(575, 340, 562, 392); c.stroke();
+  } else if (kind === 'phone') {
+    g = c.createRadialGradient(500, 370, 5, 500, 360, 280); g.addColorStop(0, 'rgba(185,205,255,.34)'); g.addColorStop(1, 'rgba(185,205,255,0)'); c.fillStyle = g; c.fillRect(180, 80, 640, 560);
+    g = c.createRadialGradient(500, 360, 2, 500, 350, 44); g.addColorStop(0, 'rgba(206,216,236,.9)'); g.addColorStop(0.65, 'rgba(120,130,152,.55)'); g.addColorStop(1, 'rgba(20,20,25,0)'); c.fillStyle = g;
+    c.beginPath(); c.ellipse(500, 350, 31, 38, 0, 0, TAU); c.fill();
+    c.fillStyle = '#050506'; c.beginPath(); c.ellipse(500, 322, 36, 22, 0, Math.PI, TAU); c.fill();
+    glints(c, 500, 348, 11, 1.6, 0.8);
+    c.fillStyle = '#0a0a0c'; c.fillRect(472, 392, 56, 82);
+    c.strokeStyle = 'rgba(190,210,255,.5)'; c.lineWidth = 2; c.strokeRect(472, 392, 56, 82);
+    c.fillStyle = 'rgba(150,160,185,.55)'; c.beginPath(); c.ellipse(466, 440, 12, 20, 0, 0, TAU); c.ellipse(534, 440, 12, 20, 0, 0, TAU); c.fill();
+  } else {
+    c.beginPath(); c.ellipse(500, 352, 36, 32, 0, 0, TAU); c.fill();
+    if (kind === 'eyes') glints(c, 500, 354, 12, 2, 0.95);
+  }
+  c.fillStyle = '#020203'; c.fillRect(60, 690, 880, 60);
+  c.strokeStyle = '#000'; c.lineCap = 'round'; c.lineWidth = 13;
+  [300, 700].forEach(hx => { for (let k = 0; k < 4; k++) { const x0 = hx + (k - 1.5) * 24; c.beginPath(); c.moveTo(x0, 700); c.quadraticCurveTo(x0 + (k - 1.5) * 5, 668, x0 + (k - 1.5) * 8, 690); c.stroke(); } });
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  const id = c.getImageData(0, 0, W, H), d = id.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * 34; d[i] += n; d[i + 1] += n + 3; d[i + 2] += n; }
+  c.putImageData(id, 0, 0);
+  g = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.2, W / 2, H / 2, Math.max(W, H) * 0.7); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.8)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  c.fillStyle = 'rgba(225,225,215,.6)'; c.font = `${Math.round(11 * DPR)}px "IBM Plex Mono", ui-monospace, monospace`; c.fillText('访客视角  ' + (kind === 'phone' ? hhmm() + ':07' : '03:41:07'), 10 * DPR, 18 * DPR);
+}
+
+function drawSpec(cv) {
+  const [k, v] = cv.dataset.draw.split(':');
+  if (k === 'corr') drawCorridor(cv, v === 'coat' ? -1 : parseFloat(v), v === 'coat');
+  else if (k === 'room') drawRoom(cv, { coat: { x: 500, top: 150, H: 560, m: 0.45, tilt: 0.08 } });
+  else if (k === 'foot') drawFootView(cv, v);
+}
+
+/* ================= audio ================= */
+const AS = { c: 1, inI: false, q: 0, fp: 0, silent: false };
+const A = {
+  ctx: null, muted: false, nextBeat: 0,
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+    let ctx; try { ctx = this.ctx = new C(); } catch (e) { return; }
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 8; comp.connect(ctx.destination);
+    const master = this.master = ctx.createGain(); master.gain.value = 0; master.connect(comp);
+    const len = ctx.sampleRate * 2;
+    const wb = ctx.createBuffer(1, len, ctx.sampleRate), w = wb.getChannelData(0);
+    for (let i = 0; i < len; i++) w[i] = Math.random() * 2 - 1;
+    const bb = ctx.createBuffer(1, len, ctx.sampleRate), b = bb.getChannelData(0); let last = 0;
+    for (let i = 0; i < len; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; b[i] = last * 3.5; }
+    this.white = wb;
+    this.padLP = ctx.createBiquadFilter(); this.padLP.type = 'lowpass'; this.padLP.frequency.value = 1400;
+    this.padG = ctx.createGain(); this.padG.gain.value = 0; this.padLP.connect(this.padG); this.padG.connect(master);
+    this.padOsc = [220, 277.18, 329.63, 440].map((f, i) => { const o = ctx.createOscillator(); o.type = i === 3 ? 'sine' : 'triangle'; o.frequency.value = f; const g = ctx.createGain(); g.gain.value = i === 3 ? 0.05 : 0.11; o.connect(g); g.connect(this.padLP); o.start(); return o; });
+    const rs = ctx.createBufferSource(); rs.buffer = bb; rs.loop = true; const rlp = ctx.createBiquadFilter(); rlp.type = 'lowpass'; rlp.frequency.value = 800;
+    this.rainG = ctx.createGain(); this.rainG.gain.value = 0; rs.connect(rlp); rlp.connect(this.rainG); this.rainG.connect(master); rs.start();
+    this.droneLP = ctx.createBiquadFilter(); this.droneLP.type = 'lowpass'; this.droneLP.frequency.value = 260; this.droneLP.Q.value = 3;
+    this.droneG = ctx.createGain(); this.droneG.gain.value = 0; this.droneLP.connect(this.droneG); this.droneG.connect(master);
+    [55, 55.9, 110.6, 164.3].forEach(f => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.connect(this.droneLP); o.start(); });
+    const bs = ctx.createBufferSource(); bs.buffer = wb; bs.loop = true; const bbp = ctx.createBiquadFilter(); bbp.type = 'bandpass'; bbp.frequency.value = 650; bbp.Q.value = 0.8;
+    this.brG = ctx.createGain(); this.brG.gain.value = 0; bs.connect(bbp); bbp.connect(this.brG);
+    if (ctx.createStereoPanner) { this.pan = ctx.createStereoPanner(); this.pan.pan.value = -0.75; this.brG.connect(this.pan); this.pan.connect(master); } else this.brG.connect(master);
+    bs.start();
+    this.nextBeat = ctx.currentTime + 0.5;
+    setInterval(() => this.tick(), 70);
+  },
+  thump(at, v) {
+    const c = this.ctx, g = c.createGain();
+    const o = c.createOscillator(); o.frequency.setValueAtTime(150, at); o.frequency.exponentialRampToValueAtTime(48, at + 0.12);
+    const o2 = c.createOscillator(); o2.type = 'triangle'; o2.frequency.setValueAtTime(95, at); o2.frequency.exponentialRampToValueAtTime(40, at + 0.1);
+    g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(v, at + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+    o.connect(g); o2.connect(g); g.connect(this.master); o.start(at); o2.start(at); o.stop(at + 0.25); o2.stop(at + 0.25);
+  },
+  whisper(pan = -0.85, vol = 0.8) {
+    const c = this.ctx; if (!c || this.muted) return; const t = c.currentTime + 0.05;
+    let dest = this.master;
+    if (c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = pan; p.connect(this.master); dest = p; }
+    [[0, 820, 1900], [0.3, 620, 1250]].forEach(([off, f1v, f2v]) => {
+      const src = c.createBufferSource(); src.buffer = this.white;
+      const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 300;
+      const f1 = c.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = f1v; f1.Q.value = 4;
+      const f2 = c.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = f2v; f2.Q.value = 6;
+      const g = c.createGain(), st = t + off;
+      g.gain.setValueAtTime(0.0001, st); g.gain.exponentialRampToValueAtTime(vol, st + 0.05); g.gain.setValueAtTime(vol, st + 0.14); g.gain.exponentialRampToValueAtTime(0.0001, st + 0.3);
+      src.connect(hp); hp.connect(f1); hp.connect(f2); f1.connect(g); f2.connect(g); g.connect(dest);
+      src.start(st, Math.random()); src.stop(st + 0.35);
+    });
+  },
+  tone(at, f, v, d) {
+    const c = this.ctx, o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), g2 = c.createGain();
+    o.frequency.value = f; o2.frequency.value = f * 2.01; g2.gain.value = 0.25;
+    g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(v, at + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, at + d);
+    o.connect(g); o2.connect(g2); g2.connect(g); g.connect(this.master); o.start(at); o2.start(at); o.stop(at + d + 0.05); o2.stop(at + d + 0.05);
+  },
+  ringStart(n) {
+    this.ringStop(); if (!this.ctx) return;
+    const notes = [1318.5, 1568, 2093, 1568].map(f => n >= 2 ? f * 0.944 : f);
+    const play = () => { const t = this.ctx.currentTime + 0.02; notes.forEach((f, k) => this.tone(t + k * 0.16, f, 0.16, 0.3)); };
+    play(); this.ringT = setInterval(play, 1700);
+  },
+  ringStop() { clearInterval(this.ringT); this.ringT = null; },
+  beep() { if (!this.ctx) return; const t = this.ctx.currentTime + 0.02; this.tone(t, 880, 0.12, 0.12); this.tone(t + 0.18, 660, 0.12, 0.2); },
+  tap() { if (!this.ctx) return; this.tone(this.ctx.currentTime + 0.01, 1800, 0.05, 0.05); },
+  hit() {
+    const c = this.ctx; if (!c) return; const t = c.currentTime + 0.01;
+    const bo = c.createOscillator(); bo.frequency.setValueAtTime(95, t); bo.frequency.exponentialRampToValueAtTime(30, t + 1);
+    const bg = c.createGain(); bg.gain.setValueAtTime(1, t); bg.gain.exponentialRampToValueAtTime(0.001, t + 1.5); bo.connect(bg); bg.connect(this.master); bo.start(t); bo.stop(t + 1.6);
+    const ns = c.createBufferSource(); ns.buffer = this.white; const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.2;
+    bp.frequency.setValueAtTime(380, t); bp.frequency.exponentialRampToValueAtTime(2600, t + 0.35);
+    const ng = c.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(0.9, t + 0.03); ng.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+    ns.connect(bp); bp.connect(ng); ng.connect(this.master); ns.start(t); ns.stop(t + 0.8);
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2200; lp.connect(this.master);
+    [233, 247, 370, 392].forEach(f => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; const g = c.createGain(); g.gain.setValueAtTime(0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + 1.8); o.connect(g); g.connect(lp); o.start(t); o.stop(t + 1.9); });
+  },
+  tick() {
+    const c = this.ctx; if (!c) return; const t = c.currentTime, set = (p, v, tc = 0.5) => p.setTargetAtTime(v, t, tc);
+    set(this.master.gain, this.muted ? 0 : 0.9, 0.25);
+    const T = targets();
+    set(this.padG.gain, T.pad, 0.8);
+    this.padOsc.forEach((o, i) => set(o.detune, T.det * [-90, 55, -140, 190][i], 1.5));
+    set(this.padLP.frequency, T.lp, 1);
+    set(this.rainG.gain, T.rain, 0.8); set(this.droneG.gain, T.drone, 0.8);
+    const ph = (t % 4.2) / 4.2, env = Math.pow(Math.sin(Math.PI * ph), 2);
+    set(this.brG.gain, T.br * env, 0.12);
+    if (this.pan) set(this.pan.pan, T.pan, 0.5);
+    if (T.hb > 0.01) {
+      const iv = 60 / T.bpm;
+      while (this.nextBeat < t + 0.2) { if (this.nextBeat > t - 0.02) { this.thump(this.nextBeat, T.hb); this.thump(this.nextBeat + Math.min(0.26, iv * 0.4), T.hb * 0.6); } this.nextBeat += iv; }
+    } else this.nextBeat = t + 0.3;
+  }
+};
+function targets() {
+  const { c, inI, q, fp } = AS, T = { pad: 0, det: 0, lp: 1400, rain: 0, drone: 0, br: 0, pan: -0.75, hb: 0, bpm: 60 };
+  if (AS.silent) return T;
+  if (c === 1) { T.pad = 0.3; T.rain = 0.2; }
+  else if (c === 2) { T.pad = 0.27; T.det = 0.3; T.rain = 0.2; T.lp = 1200; }
+  else if (c === 3) { T.pad = 0.16; T.det = 0.9; T.lp = 700; T.rain = 0.1; T.drone = 0.12; T.br = 0.035; }
+  else if (c === 4) { T.drone = 0.2; T.br = 0.08; T.hb = 0.22; T.bpm = 72; T.lp = 500; }
+  else { T.pad = 0.3 * (1 - sm(0.72, 0.92, fp)); T.det = sm(0.35, 0.9, fp) * 1.2; T.lp = lerp(1600, 600, sm(0.4, 0.9, fp)); T.br = fp > 0.93 ? 0.09 : 0; }
+  if (inI) {
+    if (c <= 2) { T.pad *= 0.35; T.rain = 0.12; T.drone = 0.03; }
+    if (c === 3) { T.pad = 0; T.rain = 0; T.drone = 0.05; T.hb = q > 0.9 ? 0 : (q > 0.77 ? 0.75 : 0.45); T.bpm = lerp(60, 104, q); T.br = 0.03 + 0.14 * sm(0.3, 0.9, q); }
+    if (c === 4) {
+      T.pad = 0; T.rain = 0; T.lp = 500; T.pan = -0.6; const ph = AS.ph;
+      if (ph === 'pre') { T.drone = 0.07; T.br = 0.05; T.hb = 0.28; T.bpm = 68; }
+      else if (ph === 'call') { T.drone = 0.04; T.br = 0.2; T.pan = -0.5; T.hb = 0.32; T.bpm = 84; }
+      else if (ph === 'post') { T.drone = 0.12; T.br = 0.13; T.hb = 0.45; T.bpm = 92; }
+      else if (ph === 'batt') { T.drone = 0.17; T.br = 0.16; T.pan = 0; T.hb = 0.75; T.bpm = lerp(100, 142, (10 - AS.n) / 10); }
+      else if (ph === 'black') { T.drone = 0; T.br = 0.38; T.pan = 0; }
+      else { T.drone = 0; }
+    }
+  }
+  return T;
+}
+let initAt = -1e9;
+function syncSoundUI() {
+  const playing = !!A.ctx && !A.muted;
+  $('#sndBtn').classList.toggle('muted', !playing);
+  $$('[data-sound] .sl').forEach(s => s.textContent = playing ? (S.cycle === 4 ? '停止' : '暂停助眠音') : (S.cycle === 4 ? '听他的呼吸' : '试听助眠音'));
+}
+function unlock() { if (!A.ctx) initAt = performance.now(); A.init(); syncSoundUI(); }
+['click', 'touchend', 'keydown'].forEach(ev => document.addEventListener(ev, unlock, { capture: true, passive: true }));
+function toggleSound(e) {
+  e.stopPropagation();
+  if (!A.ctx) { initAt = performance.now(); A.init(); A.muted = false; }
+  else if (performance.now() - initAt < 800) A.muted = false;
+  else A.muted = !A.muted;
+  if (A.ctx && A.ctx.state === 'suspended') A.ctx.resume();
+  syncSoundUI();
+}
+$('#sndBtn').addEventListener('click', toggleSound);
+
+/* ================= ui bits ================= */
+let toastT;
+function toast(title, body, ms = 3600) {
+  const t = $('#toast'); $('#toastT').textContent = title; $('#toastB').textContent = body || '';
+  t.classList.toggle('dk', S.cycle === 4); t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), ms);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-toast]'); if (b) { const [a, c] = b.dataset.toast.split('|'); toast(a, c); }
+  const s = e.target.closest('[data-sound]'); if (s) toggleSound(e);
+  if (e.target.closest('[data-close]')) $('#cookie').classList.remove('on');
+  if (e.target.closest('#again')) restart();
+});
+
+const grainCv = $('#grain'), gx = grainCv.getContext('2d');
+const grainPats = [0, 1, 2, 3].map(() => {
+  const t = document.createElement('canvas'); t.width = t.height = 160; const tc = t.getContext('2d'), id = tc.createImageData(160, 160);
+  for (let i = 0; i < id.data.length; i += 4) { const v = Math.random() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = Math.random() * 70; }
+  tc.putImageData(id, 0, 0); return gx.createPattern(t, 'repeat');
+});
+
+/* ================= render a cycle ================= */
+const main = $('#main'), nav = $('#nav'), pill = $('#pill'), veil = $('#veil'), dim = $('#dim');
+let gEls = [], laterEls = [], eegEls = [], subs = [], interEl = null, finalEl = null, sceneCv = null, clockEl = null, indEl = null, lidT = null, lidB = null, rcEl = null;
+let rcSeen = false, rcChanged = false, endAt = 0;
+function render(c) {
+  S.cycle = c; store.cycle = c; save();
+  document.body.className = 't' + c; document.body.style.background = '';
+  ACC = getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#3F4BC9';
+  main.innerHTML = PLAN[c].map(f => f(c)).join('');
+  $('#navLinks').innerHTML = NAV[c].map(x => `<span>${x}</span>`).join('');
+  const nc = $('#navCta');
+  nc.textContent = c === 4 ? '开始等待' : '免费试睡';
+  nc.dataset.toast = c === 4 ? `已开始等待|目标用户仍在看${NOUN}。` : '感谢你的信任|今晚 0:00 自动开始，你什么都不用做。';
+  gEls = $$('[data-g]', main); gEls.forEach(e => e.dataset.o = e.textContent);
+  laterEls = $$('[data-later]', main);
+  eegEls = $$('.eegc', main);
+  interEl = $('.inter', main); finalEl = $('.final', main);
+  sceneCv = interEl ? $('canvas.scene', interEl) : null;
+  subs = interEl ? $$('.subs p', interEl) : [];
+  clockEl = interEl ? $('.clock', interEl) : null; indEl = interEl ? $('.ind', interEl) : null;
+  lidT = interEl ? $('.lid.top', interEl) : null; lidB = interEl ? $('.lid.bot', interEl) : null;
+  rcEl = $('#rc'); rcSeen = false; rcChanged = false; endAt = 0;
+  S.cl = { step: 0, light: 1, called: false, callDone: false, batt: false, answered: false, cur: { ...FIGS[0] } }; AS.ph = 'pre'; AS.n = 10;
+  dim.classList.remove('off');
+  syncSoundUI(); measure(); updateLive();
+}
+
+/* ================= layout ================= */
+let vh = innerHeight, secs = [], interTop = 1e9, interH = 1, finalTop = 1e9, finalH = 1;
+function measure() {
+  vh = innerHeight;
+  secs = $$(':scope > section', main).map(el => { const r = el.getBoundingClientRect(); return { name: el.dataset.name, top: r.top + scrollY, h: r.height }; });
+  if (interEl) { const r = interEl.getBoundingClientRect(); interTop = r.top + scrollY; interH = r.height; } else interTop = 1e9;
+  if (finalEl) { const r = finalEl.getBoundingClientRect(); finalTop = r.top + scrollY; finalH = r.height; } else finalTop = 1e9;
+  fitCanvas(grainCv, 1); fitCanvas($('#hypPill'));
+  eegEls.forEach(cv => fitCanvas(cv));
+  $$('canvas.hypc', main).forEach(cv => { if (fitCanvas(cv) || !cv.dataset.ok) { drawHyp(cv, S.cycle); cv.dataset.ok = 1; } });
+  $$('canvas[data-draw]', main).forEach(cv => { if (fitCanvas(cv, Math.min(DPR, 1.5)) || !cv.dataset.ok) { drawSpec(cv); cv.dataset.ok = 1; } });
+  if (sceneCv) fitCanvas(sceneCv, Math.min(DPR, 1.5));
+}
+let mT; const remeasure = () => { clearTimeout(mT); mT = setTimeout(measure, 150); };
+addEventListener('resize', remeasure);
+if (window.ResizeObserver) new ResizeObserver(remeasure).observe(main);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+/* ================= reader behaviour ================= */
+let peakY = 0, lastScrollAt = performance.now(), busy = false;
+addEventListener('scroll', () => {
+  const y = scrollY; lastScrollAt = performance.now();
+  if (y > peakY) peakY = y;
+  if (peakY - y > 420 && !busy) { S.ups++; peakY = y; onUp(); }
+}, { passive: true });
+function onUp() {
+  if (inI) return;
+  if (S.cycle === 3 && !S.flags.up3) { S.flags.up3 = 1; toast('在找什么？', '我们没有改过任何东西。'); }
+  if (S.cycle === 4 && !S.flags.up4) { S.flags.up4 = 1; toast('目标用户正在回看', '他开始察觉了。'); }
+}
+let hideAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { hideAt = Date.now(); return; }
+  const s = Math.round((Date.now() - hideAt) / 1000); if (!hideAt || s < 3 || busy) return;
+  S.aways++;
+  const c = S.cycle;
+  setTimeout(() => {
+    if (c === 2) toast('欢迎回来', `你离开了 ${s} 秒。`);
+    else if (c === 3) toast(`你离开了 ${s} 秒`, '我们一直在。');
+    else if (c === 4) toast(`目标用户离开 ${s} 秒后返回`, '访客已经就位。');
+  }, 600);
+});
+function maxDwell() {
+  const d = S.dwell[S.cycle] || {}; let best = '首页', bv = -1;
+  for (const k in d) if (k !== '夜里' && d[k] > bv) { bv = d[k]; best = k; }
+  return best;
+}
+function updateLive() {
+  const now = hhmm(), el = Math.max(1, Math.floor((Date.now() - S.t0) / 60000));
+  $$('[data-live]').forEach(e => {
+    const k = e.dataset.live;
+    const v = k === 'now' ? now : k === 'elapsed' ? el : k === 'ups' ? S.ups : k === 'aways' ? S.aways : k === 'dwell' ? maxDwell() : null;
+    if (v !== null && e.textContent !== String(v)) e.textContent = v;
+  });
+}
+setInterval(() => {
+  updateLive();
+  const c = S.cycle;
+  if ((c === 3 || c === 4) && !inI && !busy && performance.now() - lastScrollAt > 25000 && !S.flags['idle' + c]) {
+    S.flags['idle' + c] = 1;
+    if (c === 3) toast('你停下来了', '你听见什么了吗？'); else toast('目标用户停止滑动 25 秒', '建议：靠近一步。');
+  }
+}, 1000);
+setInterval(() => {
+  if (S.cycle > 3 || busy) return;
+  S.count += 1 + Math.floor(rnd(3));
+  $$('.count:not(.frozen)').forEach(e => e.textContent = fmt(S.count));
+}, 1600);
+
+/* ================= glitch, flicker, cookie ================= */
+const GL = '醒看它眼床尾别你睁闭衣门█▓';
+const GLP = { 3: 0.09, 4: 0.26 };
+(function glitchLoop() {
+  const p = (GLP[S.cycle] || 0) * (RM ? 0.4 : 1);
+  if (!inI && !busy && Math.random() < p) {
+    const vis = gEls.filter(e => { const r = e.getBoundingClientRect(); return r.bottom > 0 && r.top < vh; });
+    if (vis.length) {
+      const e = vis[Math.floor(rnd(vis.length))], o = e.dataset.o, arr = [...o];
+      for (let i = 0, k = 1 + Math.floor(rnd(S.cycle === 4 ? 4 : 2)); i < k; i++) arr[Math.floor(rnd(arr.length))] = GL[Math.floor(rnd(GL.length))];
+      e.textContent = arr.join(''); setTimeout(() => { e.textContent = e.dataset.o; }, rnd(70, 200));
+    }
+  }
+  setTimeout(glitchLoop, rnd(130, 280));
+})();
+(async function flickerLoop() {
+  const f = $('#flick');
+  while (true) {
+    await sleep(rnd(2500, 7000));
+    if (RM || inI || busy || S.cycle < 3 || S.cycle > 4) continue;
+    f.style.opacity = S.cycle === 4 ? 0.5 : 0.3; await sleep(60); f.style.opacity = 0; await sleep(rnd(80, 160));
+    if (Math.random() < 0.5) { f.style.opacity = 0.25; await sleep(50); f.style.opacity = 0; }
+  }
+})();
+
+/* ================= night progress & pill ================= */
+const CT = { 1: [0, 91], 2: [91, 184], 3: [184, 273], 4: [273, 372] };
+const STG = [[0.08, '入睡期', 2], [0.3, '浅睡', 3], [0.55, '深睡', 4], [0.72, '浅睡', 3], [1.01, '快速眼动', 1]];
+const hist = [];
+function stageNow() {
+  if (S.cycle === 5) return FP > 0.965 ? ['快速眼动', 1] : ['已醒来', 0];
+  if (inI) return ['短暂醒来', 0];
+  const s = STG.find(x => P < x[0]) || STG[STG.length - 1]; return [s[1], s[2]];
+}
+function drawPill() {
+  const cv = $('#hypPill'), g = cv.getContext('2d'), W = cv.width, H = cv.height;
+  g.clearRect(0, 0, W, H);
+  const ly = l => 3 * DPR + l * (H - 6 * DPR) / 4;
+  g.strokeStyle = 'rgba(128,128,150,.2)'; g.lineWidth = DPR; g.beginPath(); g.moveTo(0, H - DPR); g.lineTo(W, H - DPR); g.stroke();
+  g.lineWidth = 1.6 * DPR; g.lineJoin = 'round';
+  const dark = pill.classList.contains('dk');
+  let prev = null;
+  hist.forEach(([m, l]) => {
+    const x = Math.min(W, m / 480 * W), y = ly(l);
+    g.strokeStyle = m > 273 && m < 372 ? '#ff6a6f' : (dark ? '#AEB5F7' : '#3F4BC9');
+    g.beginPath(); if (prev) { g.moveTo(prev[0], prev[1]); g.lineTo(x, prev[1]); g.lineTo(x, y); } else g.moveTo(x, y);
+    g.stroke(); prev = [x, y];
+  });
+}
+
+/* ================= interlude & final ================= */
+function interFrame(t, dt) {
+  const c = S.cycle, q = Q;
+  if (c === 4) return climaxFrame(t, dt || 0.016);
+  subs.forEach(p => p.classList.toggle('on', q >= +p.dataset.a && q < +p.dataset.b));
+  if (clockEl) clockEl.style.opacity = INTER[c].scene ? (0.5 * (1 - sm(0.04, 0.09, q))) : 0.16;
+  let ind = null;
+  if (c === 1 && q > 0.22 && q < 0.56) ind = ['#3d6bff', Math.sin(t * 9) > 0.2 ? 0.7 : 0.08];
+  if (c === 3 && q > 0.22) ind = ['#ff2020', 0.45 + 0.1 * Math.sin(t * 3)];
+  if (c === 4 && q > 0.14) ind = ['#3d6bff', 0.35];
+  if (indEl) { indEl.style.opacity = ind ? ind[1] : 0; if (ind) indEl.style.background = ind[0]; }
+  let closed = 0;
+  if (c === 3) {
+    if (q < 0.05) closed = 1 - sm(0, 0.05, q) + (q > 0.022 && q < 0.032 ? 0.7 : 0);
+    else if (q < 0.77) closed = 0;
+    else if (q < 0.84) closed = sm(0.77, 0.84, q);
+    else if (q < 0.88) closed = 1;
+    else closed = 1 - sm(0.88, 0.93, q) * 0.82;
+  } else if (c === 4) closed = q < 0.05 ? 1 - sm(0, 0.05, q) : 0;
+  closed = clamp(closed);
+  if (lidT) lidT.style.height = lidB.style.height = (closed * 58).toFixed(2) + '%';
+  if (sceneCv) {
+    if (c === 3) {
+      const coat = q < 0.86 ? { x: 500, top: 150, H: 560, m: sm(0.6, 0.77, q) * 0.22, tilt: sm(0.6, 0.77, q) * 0.06 } : { x: 506, top: 92, H: 730, m: 0.8, tilt: 0.2, eyes: 0.8 };
+      drawRoom(sceneCv, { coat, red: q > 0.22 ? 1 : 0, t });
+    } else drawRoom(sceneCv, { dawn: lerp(0.25, 0.6, q), peek: sm(0.62, 0.97, q), t });
+  }
+  const W = INTER[c].whisper;
+  if (W) W.forEach((w, i) => { const k = 'w' + c + i; if (q >= w && !S.flags[k]) { S.flags[k] = 1; A.whisper(-0.85); } });
+  if (q >= 0.985) nextCycle();
+}
+function finalFrame() {
+  const k = sm(0.62, 0.95, FP);
+  const bg = mixc('#F6F7F9', '#000000', k);
+  finalEl.style.background = bg; finalEl.style.color = mixc('#151827', '#6a6a70', k);
+  document.body.style.background = FP > 0.4 ? bg : '';
+  if (rcEl) {
+    const r = rcEl.getBoundingClientRect(), vis = r.bottom > 0 && r.top < vh;
+    if (vis) rcSeen = true;
+    else if (rcSeen && !rcChanged) { rcChanged = true; rcEl.querySelector('b').textContent = '03:33'; }
+  }
+  if (FP > 0.985) {
+    if (!store.done) { store.done = true; save(); }
+    if (!endAt) endAt = performance.now();
+    if (performance.now() - endAt > 8000) dim.classList.add('off');
+  } else { endAt = 0; dim.classList.remove('off'); }
+}
+
+
+/* ================= the face (lit from below by a phone) ================= */
+const FACE2 = (() => {
+  const cv = document.createElement('canvas'); cv.width = 600; cv.height = 800; const g = cv.getContext('2d');
+  const blob = (x, y, rx, ry, rot, stops) => { g.save(); g.translate(x, y); g.rotate(rot); g.scale(rx / ry, 1); const rg = g.createRadialGradient(0, 0, 0, 0, 0, ry); stops.forEach(s => rg.addColorStop(s[0], s[1])); g.fillStyle = rg; g.beginPath(); g.arc(0, 0, ry, 0, TAU); g.fill(); g.restore(); };
+  g.fillStyle = '#000'; g.fillRect(0, 0, 600, 800);
+  g.fillStyle = '#030304'; g.beginPath(); g.ellipse(300, 400, 255, 380, 0, 0, TAU); g.fill();
+  g.save(); g.beginPath(); g.moveTo(300, 110);
+  g.bezierCurveTo(420, 110, 488, 210, 484, 350); g.bezierCurveTo(482, 465, 445, 555, 398, 632);
+  g.bezierCurveTo(360, 694, 330, 728, 300, 730); g.bezierCurveTo(270, 728, 240, 694, 202, 632);
+  g.bezierCurveTo(155, 555, 118, 465, 116, 350); g.bezierCurveTo(112, 210, 180, 110, 300, 110); g.closePath();
+  const sk = g.createRadialGradient(300, 690, 20, 300, 640, 470);
+  sk.addColorStop(0, '#e6edf6'); sk.addColorStop(0.3, '#aab3c1'); sk.addColorStop(0.62, '#474d59'); sk.addColorStop(1, '#090a0d');
+  g.fillStyle = sk; g.fill(); g.clip();
+  let lg = g.createLinearGradient(0, 100, 0, 400); lg.addColorStop(0, 'rgba(0,0,0,.96)'); lg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = lg; g.fillRect(0, 0, 600, 800);
+  for (let i = 0; i < 40; i++) { const x = rnd(140, 460), y = rnd(200, 700), r = rnd(10, 50); blob(x, y, r, r, 0, [[0, `rgba(30,32,40,${rnd(0.05, 0.14)})`], [1, 'rgba(30,32,40,0)']]); }
+  blob(300, 405, 34, 85, 0, [[0, 'rgba(0,0,0,.5)'], [1, 'rgba(0,0,0,0)']]);
+  blob(300, 470, 28, 24, 0, [[0, 'rgba(240,246,255,.4)'], [1, 'rgba(240,246,255,0)']]);
+  blob(285, 488, 11, 7, 0.25, [[0, 'rgba(0,0,0,.95)'], [1, 'rgba(0,0,0,0)']]); blob(317, 488, 11, 7, -0.25, [[0, 'rgba(0,0,0,.95)'], [1, 'rgba(0,0,0,0)']]);
+  blob(190, 430, 50, 70, 0.2, [[0, 'rgba(0,0,0,.4)'], [1, 'rgba(0,0,0,0)']]); blob(410, 434, 50, 70, -0.2, [[0, 'rgba(0,0,0,.4)'], [1, 'rgba(0,0,0,0)']]);
+  blob(226, 360, 74, 50, 0.08, [[0, 'rgba(0,0,0,.8)'], [0.7, 'rgba(0,0,0,.4)'], [1, 'rgba(0,0,0,0)']]);
+  blob(376, 366, 72, 52, -0.06, [[0, 'rgba(0,0,0,.8)'], [0.7, 'rgba(0,0,0,.4)'], [1, 'rgba(0,0,0,0)']]);
+  const eye = (x, y) => {
+    g.save(); g.beginPath(); g.ellipse(x, y, 31, 16, 0, 0, TAU); g.clip();
+    const sg = g.createLinearGradient(0, y - 16, 0, y + 16); sg.addColorStop(0, '#585e6c'); sg.addColorStop(1, '#c8cfdb'); g.fillStyle = sg; g.fillRect(x - 36, y - 20, 72, 40);
+    g.fillStyle = '#15171b'; g.beginPath(); g.arc(x + 1, y - 1, 11, 0, TAU); g.fill();
+    g.fillStyle = '#000'; g.beginPath(); g.arc(x + 1, y - 1, 6, 0, TAU); g.fill();
+    g.fillStyle = 'rgba(236,243,255,.95)'; g.fillRect(x - 3, y + 1, 4, 6);
+    g.restore();
+    g.strokeStyle = 'rgba(0,0,0,.65)'; g.lineWidth = 3; g.beginPath(); g.ellipse(x, y, 32, 17, 0, Math.PI * 1.04, Math.PI * 1.96); g.stroke();
+    blob(x, y + 20, 30, 6, 0, [[0, 'rgba(225,232,244,.25)'], [1, 'rgba(225,232,244,0)']]);
+  };
+  eye(228, 362); eye(375, 367);
+  blob(302, 590, 46, 15, 0, [[0, '#000'], [0.7, 'rgba(10,6,6,.9)'], [1, 'rgba(0,0,0,0)']]);
+  blob(302, 608, 36, 8, 0, [[0, 'rgba(222,228,238,.35)'], [1, 'rgba(222,228,238,0)']]);
+  blob(302, 570, 40, 7, 0, [[0, 'rgba(0,0,0,.35)'], [1, 'rgba(0,0,0,0)']]);
+  g.restore();
+  for (let i = 0; i < 240; i++) {
+    const left = i % 2 === 0, sx = rnd(150, 450), sy = rnd(50, 140), ex = left ? rnd(40, 215) : rnd(385, 560), ey = rnd(620, 820), over = Math.random() < 0.16;
+    g.strokeStyle = over ? 'rgba(0,0,0,.7)' : 'rgba(0,0,0,.93)'; g.lineWidth = rnd(0.8, 3.2);
+    g.beginPath(); g.moveTo(sx, sy); g.bezierCurveTo(over ? rnd(180, 420) : (left ? rnd(90, 200) : rnd(400, 510)), rnd(200, 330), ex + rnd(-40, 40), rnd(400, 600), ex, ey); g.stroke();
+  }
+  const id = g.getImageData(0, 0, 600, 800), d = id.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * 40; d[i] += n; d[i + 1] += n; d[i + 2] += n + 4; }
+  g.putImageData(id, 0, 0);
+  const vg = g.createRadialGradient(300, 470, 160, 300, 470, 520); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.95)'); g.fillStyle = vg; g.fillRect(0, 0, 600, 800);
+  return cv;
+})();
+function drawReveal(e) {
+  const cv = $('#reveal'), c = cv.getContext('2d'), W = cv.width, H = cv.height;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+  const base = W > H ? H / 800 : Math.max(W / 600, H / 800);
+  const k = RM ? 1.12 : (e < 0.05 ? lerp(0.9, 1.1, e / 0.05) : 1.1 + e * 0.14);
+  const fw = 600 * base * k, fh = 800 * base * k, j = RM ? 0 : (1 - e) * 0.006;
+  c.globalAlpha = 0.9 + Math.random() * 0.1;
+  c.drawImage(FACE2, (W - fw) / 2 + (Math.random() - 0.5) * W * j, H * 0.44 - fh * (365 / 800) + (Math.random() - 0.5) * H * j, fw, fh);
+  c.globalAlpha = 1;
+  const g = c.createRadialGradient(W / 2, H * 1.1, 0, W / 2, H * 1.1, H * 0.7); g.addColorStop(0, 'rgba(190,210,255,.22)'); g.addColorStop(1, 'rgba(190,210,255,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+}
+
+/* ================= the climax (05:12) ================= */
+const FIGS = [
+  { x: 500, top: 150, H: 560, m: 0, tilt: 0, eyes: 0 },
+  { x: 506, top: 118, H: 650, m: 0.9, tilt: 0.12, eyes: 0.75 },
+  { x: 500, top: 104, H: 780, m: 0.95, tilt: 0.16, eyes: 0.85 },
+  { x: 494, top: 96, H: 930, m: 1, tilt: 0.2, eyes: 0.9, front: 1 },
+  { x: 500, top: 86, H: 1100, m: 1, tilt: 0.24, eyes: 1, front: 1 },
+  { x: 500, top: 78, H: 1320, m: 1, tilt: 0.3, eyes: 1, front: 1 },
+  { x: 500, top: 70, H: 1560, m: 1, tilt: 0.34, eyes: 1, front: 1 }
+];
+const callEl = $('#call'), callSt = $('#callSt'), callLoc = $('#callLoc'), callCap = $('#callCap');
+const cdEl = $('#cd'), cdN = $('#cdN'), cdTip = $('#cdTip'), cdTxt = $('#cdTxt'), darkEl = $('#dark'), battEl = $('#batt');
+addEventListener('touchmove', e => { if (evt) e.preventDefault(); }, { passive: false });
+addEventListener('wheel', e => { if (evt) e.preventDefault(); }, { passive: false });
+let lockY = 0;
+function lockAt(q) { lockY = Math.round(interTop + Math.max(1, interH - vh) * q); window.scrollTo(0, lockY); evt = true; }
+function unlockScroll() { evt = false; }
+addEventListener('scroll', () => { if (evt && Math.abs(scrollY - lockY) > 2) window.scrollTo(0, lockY); }, { passive: true });
+addEventListener('keydown', e => { if (evt && [' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'End', 'Home'].includes(e.key)) e.preventDefault(); });
+const vib = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+function climaxFrame(t, dt) {
+  const q = Q, L = S.cl;
+  subs.forEach(p => p.classList.toggle('on', !evt && q >= +p.dataset.a && q < +p.dataset.b));
+  if (clockEl) clockEl.style.opacity = 0.5 * (1 - sm(0.03, 0.08, q));
+  if (indEl) { indEl.style.opacity = L.step ? 0.45 + 0.1 * Math.sin(t * 3) : 0.35; indEl.style.background = L.step ? '#ff2020' : '#3d6bff'; }
+  if (lidT) lidT.style.height = lidB.style.height = (clamp(q < 0.04 ? 1 - sm(0, 0.04, q) : 0) * 58).toFixed(2) + '%';
+  const tg = FIGS[Math.min(L.step, FIGS.length - 1)], k = 1 - Math.exp(-dt * 2.6);
+  ['x', 'top', 'H', 'm', 'tilt', 'eyes'].forEach(key => { L.cur[key] = lerp(L.cur[key], tg[key], k); });
+  const sway = L.step ? Math.sin(t * 0.8) * 0.02 : 0;
+  if (sceneCv) drawRoom(sceneCv, { coat: { ...L.cur, tilt: L.cur.tilt + sway, front: !!tg.front && L.cur.H > 880 }, glow: L.light, red: L.step ? 0.8 : 0, t });
+  if (!L.called && q >= 0.345) startCall();
+  if (L.callDone && !L.batt && q >= 0.72) startBattery();
+}
+function ring(n) {
+  return new Promise(res => {
+    callEl.className = 'call on ringing'; callSt.textContent = '正在呼叫…'; callCap.textContent = '';
+    callLoc.textContent = n >= 2 ? '来电位置：你的卧室' : '';
+    A.ringStart(n); vib([500, 300, 500, 300, 500, 300, 500, 300, 500, 300, 500, 300, 500]);
+    let done = false, t2;
+    const fin = v => { if (done) return; done = true; A.ringStop(); vib(0); clearTimeout(tm); clearTimeout(t2); $('#callAcc').onclick = $('#callDec').onclick = null; res(v); };
+    $('#callAcc').onclick = () => fin('acc'); $('#callDec').onclick = () => fin('dec');
+    if (n === 3) t2 = setTimeout(() => { callSt.textContent = '正在自动接听…'; }, 1500);
+    const tm = setTimeout(() => fin(n === 3 ? 'auto' : 'miss'), n === 3 ? 3400 : 7000);
+  });
+}
+async function talk() {
+  callEl.className = 'call on talk'; callLoc.textContent = '';
+  const t0 = Date.now(), timer = setInterval(() => { const s = Math.floor((Date.now() - t0) / 1000); callSt.textContent = `00:${pad2(s)}`; }, 250);
+  let hung = 0;
+  $('#callEnd').onclick = () => { hung++; callCap.textContent = hung > 1 ? '……' : '别挂。'; A.whisper(-0.4, 0.9); };
+  const lines = [['……', 1700], ['你还没睡啊。', 2400], ['妈妈就在你床尾呢。', 2600], [`把${NOUN}放下吧。`, 2400], ['抬头看看妈妈。', 2800], ['……', 1600], ['你为什么不抬头？', 2800]];
+  for (const [l, ms] of lines) { callCap.textContent = l; if (l !== '……') A.whisper(-0.6, 0.9); await sleep(ms); }
+  clearInterval(timer); $('#callEnd').onclick = null;
+  callSt.textContent = '对方已挂断'; callCap.textContent = ''; await sleep(1400);
+}
+async function startCall() {
+  const L = S.cl; L.called = true; lockAt(0.345); AS.ph = 'call'; pill.classList.add('hide');
+  await sleep(900);
+  let connected = false;
+  for (let n = 1; n <= 3 && !connected; n++) {
+    const r = await ring(n);
+    if (r === 'acc') { connected = true; L.answered = true; }
+    else if (r === 'auto') connected = true;
+    else { callEl.className = 'call'; await sleep(1500); }
+  }
+  await talk();
+  callEl.className = 'call';
+  const ans = $('#ansLine'); if (ans) ans.textContent = L.answered ? '你接了。你回答了它。' : '你没有接。它还是接通了。';
+  L.step = 1; AS.ph = 'post'; pill.classList.remove('hide');
+  await sleep(500); unlockScroll(); L.callDone = true;
+}
+async function startBattery() {
+  const L = S.cl; L.batt = true; lockAt(0.72); AS.ph = 'batt'; AS.n = 10; pill.classList.add('hide');
+  battEl.classList.add('on'); A.beep(); vib(200);
+  await sleep(2800);
+  let n = 10, taps = 0;
+  cdN.textContent = n; cdTip.textContent = '轻点屏幕，可以让它继续亮着'; cdTxt.textContent = ''; cdEl.classList.add('on');
+  const say = { 8: '它没有动。它在等。', 6: '它在等屏幕熄灭。', 4: '光暗下去了。', 3: '它近了。', 2: '它又近了。', 1: '别——' };
+  const apply = () => {
+    cdN.textContent = n; AS.n = n;
+    const dimv = n >= 5 ? 0 : (5 - n) / 5 * 0.82;
+    darkEl.style.opacity = dimv; L.light = n >= 5 ? 1 : Math.max(0.1, n / 5);
+    if (n <= 4) L.step = Math.max(L.step, 1 + (5 - n));
+  };
+  const onTap = () => {
+    if (n <= 0) return; taps++;
+    if (taps <= 3) { n = Math.min(10, n + 3); cdTip.textContent = '已保持亮屏'; A.tap(); apply(); }
+    else cdTip.textContent = '触摸没有反应';
+  };
+  document.addEventListener('pointerdown', onTap);
+  while (n > 0) {
+    await sleep(1000);
+    if (n === 8) battEl.classList.remove('on');
+    n--; apply(); if (say[n]) cdTxt.textContent = say[n];
+  }
+  document.removeEventListener('pointerdown', onTap);
+  battEl.classList.remove('on'); cdEl.classList.remove('on');
+  darkEl.style.transition = 'opacity .25s'; darkEl.style.opacity = 1; AS.ph = 'black';
+  await sleep(3800);
+  await revealSeq();
+}
+async function revealSeq() {
+  busy = true; AS.ph = 'reveal';
+  const rv = $('#reveal'); rv.style.display = 'block'; fitCanvas(rv, Math.min(DPR, 1.5));
+  A.hit(); vib([700]);
+  const fl = $('#flash');
+  if (!RM) { fl.style.transition = 'none'; fl.style.opacity = '.75'; requestAnimationFrame(() => requestAnimationFrame(() => { fl.style.transition = 'opacity .45s'; fl.style.opacity = '0'; })); }
+  const t0 = performance.now();
+  await new Promise(res => { const f = ts => { const e = (ts - t0) / 1900; if (e >= 1) return res(); drawReveal(e); requestAnimationFrame(f); }; requestAnimationFrame(f); });
+  rv.style.display = 'none'; AS.silent = true;
+  await sleep(2300);
+  $('#noteT').textContent = '05:13'; $('#note').classList.add('on');
+  await sleep(3200);
+  $('#note').classList.remove('on'); await sleep(900);
+  veil.classList.add('on'); await sleep(950);
+  darkEl.style.transition = 'none'; darkEl.style.opacity = 0; requestAnimationFrame(() => { darkEl.style.transition = ''; });
+  unlockScroll(); AS.silent = false; pill.classList.remove('hide');
+  await goCycle(5);
+}
+
+/* ================= transitions ================= */
+const ARRIVE = {
+  2: ['第 2 个睡眠周期 · 00:34', '已进入浅睡。一切正常。'],
+  3: ['第 3 个睡眠周期 · 02:07', '已进入深睡。请不要回答。'],
+  4: ['访客模式已开启 · 03:36', '目标用户：清醒。'],
+  5: ['早上好 · 07:00', '昨晚睡眠评分 98，超过了 99% 的用户。']
+};
+async function goCycle(n) {
+  busy = true;
+  render(n); window.scrollTo(0, 0); peakY = 0; measure();
+  await sleep(450);
+  veil.classList.remove('on'); busy = false;
+  await sleep(1000);
+  toast(ARRIVE[n][0], ARRIVE[n][1], 4200);
+}
+async function nextCycle() {
+  if (busy) return; busy = true;
+  veil.classList.add('on'); await sleep(950);
+  await goCycle(S.cycle + 1);
+}
+async function restart() {
+  busy = true; dim.classList.remove('off'); veil.classList.add('on'); await sleep(950);
+  RET = true; store.visits = (store.visits || 1) + 1; save();
+  hist.length = 0; S.flags = {};
+  render(1); window.scrollTo(0, 0); peakY = 0; measure();
+  await sleep(450); veil.classList.remove('on'); busy = false;
+}
+
+/* ================= main loop ================= */
+let lastT = 0, frameN = 0, lastHist = -1;
+const GR = { 1: 0, 2: 0.03, 3: 0.12, 4: 0.15, 5: 0 }, VG = { 1: 0, 2: 0, 3: 0.35, 4: 0.55, 5: 0 };
+function loop(ts) {
+  const t = ts / 1000, dt = Math.min(0.1, t - lastT); lastT = t; frameN++;
+  const sy = scrollY, c = S.cycle;
+  if (!busy) {
+    if (c < 5) {
+      P = clamp(sy / Math.max(1, interTop - vh)); inI = sy >= interTop - 2;
+      Q = inI ? clamp((sy - interTop) / Math.max(1, interH - vh)) : 0;
+      NM = inI ? CT[c][1] + Q * 2 : lerp(CT[c][0] + 1, CT[c][1] - 2, P); FP = 0;
+    } else {
+      P = clamp(sy / Math.max(1, finalTop - vh)); inI = false; Q = 0;
+      FP = clamp((sy + vh - finalTop) / Math.max(1, finalH)); NM = 480 + FP * 3;
+    }
+    const [, lv] = stageNow(), last = hist[hist.length - 1];
+    if (!last || (NM > last[0] + 0.5 && (lv !== last[1] || NM - last[0] > 4))) hist.push([NM, lv]);
+    if (!document.hidden) {
+      const y = sy + vh / 2, s = secs.find(x => y >= x.top && y < x.top + x.h);
+      if (s) { const d = S.dwell[c] || (S.dwell[c] = {}); d[s.name] = (d[s.name] || 0) + dt; }
+    }
+  }
+  AS.c = c; AS.inI = inI; AS.q = Q; AS.fp = FP;
+  nav.classList.toggle('gone', c < 5 ? sy > interTop - vh * 0.6 : FP > 0.12);
+  // pill
+  const [stName] = stageNow();
+  $('#pl').textContent = c === 4 ? '目标用户' : '入睡体验';
+  const txt = c === 4 && !inI ? `${hhmm()} · 清醒` : `${nightStr(NM)} · ${stName}`;
+  const st = $('#st'); if (st.textContent !== txt) st.textContent = txt;
+  pill.classList.toggle('dk', c === 4 || inI || (c === 5 && FP > 0.7));
+  pill.classList.toggle('red', c === 4 || (c === 3 && inI && Q > 0.22));
+  if (hist.length !== lastHist || frameN % 40 === 0) { lastHist = hist.length; drawPill(); }
+  // overlays
+  const go = inI ? 0.12 : GR[c];
+  grainCv.style.opacity = go;
+  if (go > 0.01 && frameN % 2 === 0) {
+    gx.setTransform(1, 0, 0, 1, rnd(-160, 0), rnd(-160, 0));
+    gx.clearRect(-200, -200, grainCv.width + 400, grainCv.height + 400);
+    gx.fillStyle = grainPats[(frameN >> 1) % 4]; gx.fillRect(0, 0, grainCv.width + 200, grainCv.height + 200);
+  }
+  $('#vig').style.opacity = inI ? 0.6 : VG[c];
+  // things that change once you stop looking
+  if (frameN % 8 === 0) laterEls.forEach(e => { if (!e.dataset.done && e.getBoundingClientRect().bottom < -30) { e.textContent = e.dataset.later; e.dataset.done = 1; } });
+  if (c === 1 && P > 0.25) $('#cookie').classList.remove('on');
+  // live canvases
+  eegEls.forEach(cv => { const r = cv.getBoundingClientRect(); if (r.bottom > 0 && r.top < vh) drawEEG(cv, t, cv.dataset.mode); });
+  if (c < 5 && sy + vh > interTop - 20 && !busy) interFrame(t, dt);
+  if (c === 5 && finalEl) finalFrame();
+  requestAnimationFrame(loop);
+}
+
+/* ================= boot ================= */
+let start = 1;
+if (store.cycle > 1 && store.cycle <= 5 && !store.done) start = store.cycle;
+render(start);
+requestAnimationFrame(loop);
+if (start === 1 && store.visits === 1) setTimeout(() => $('#cookie').classList.add('on'), 1400);
+if (start > 1) setTimeout(() => toast('你又睡着了', `从第 ${start} 个睡眠周期继续。`, 4200), 900);
+if (start === 1 && RET) setTimeout(() => toast('欢迎回来', '今晚也交给我们吧。', 4200), 900);
+})();
+</script>
+</body>
+</html>
